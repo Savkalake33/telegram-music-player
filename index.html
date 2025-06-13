@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Music Player</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .player {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .playlist {
+            margin-top: 20px;
+        }
+        .track {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .track:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <h2>🎵 Telegram Music</h2>
+        <audio id="audio" controls></audio>
+        <div class="playlist" id="playlist">
+            <!-- Треки будут загружаться здесь -->
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Плейлист (можно заменить на загрузку с API)
+        const tracks = [
+            {
+                title: "Lofi Chill",
+                url: "https://soundcloud.com/lofigeek/chill-lofi-study-mix" // Пример (нужен API для стрима)
+            },
+            {
+                title: "Jazz Vibes",
+                url: "https://soundcloud.com/jazzvibes/smooth-jazz"
+            }
+        ];
+
+        // Загрузка плейлиста
+        const playlist = document.getElementById('playlist');
+        tracks.forEach(track => {
+            const div = document.createElement('div');
+            div.className = 'track';
+            div.textContent = track.title;
+            div.onclick = () => {
+                document.getElementById('audio').src = track.url;
+                document.getElementById('audio').play();
+            };
+            playlist.appendChild(div);
+        });
+    </script>
+</body>
+</html>
