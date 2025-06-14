@@ -3,204 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Музыкальный Плеер</title>
+    <title>MartyPlayer</title>
     <style>
+        :root {
+            --primary: #8d5cf6;
+            --dark: #121212;
+            --gray: #282828;
+            --light-gray: #b3b3b3;
+            --white: #ffffff;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 600px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark);
+            color: var(--white);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .player-container {
+            max-width: 500px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .header {
             padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .player {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .now-playing {
+            background: linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%);
+            padding: 30px 20px;
+            border-radius: 0 0 30px 30px;
+            position: relative;
             overflow: hidden;
-            margin-bottom: 20px;
         }
         
-        .player-controls {
-            display: flex;
-            justify-content: center;
-            padding: 15px;
-            gap: 20px;
-            align-items: center;
-        }
-        
-        .play-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+        .now-playing::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
         }
         
         .track-info {
-            padding: 15px;
+            position: relative;
+            z-index: 1;
             text-align: center;
-            background-color: #f9f9f9;
-        }
-        
-        .track-title {
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-        
-        .playlist {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .track {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 10px;
-            background-color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .track:hover {
-            background-color: #f0f0f0;
         }
         
         .track-cover {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
+            width: 220px;
+            height: 220px;
+            border-radius: 20px;
+            margin: 0 auto 25px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             background-size: cover;
             background-position: center;
-            background-color: #e0e0e0;
+            background-color: var(--gray);
         }
         
-        .track-info {
-            flex-grow: 1;
-            text-align: left;
-            padding: 0;
+        .track-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .track-artist {
+            font-size: 16px;
+            color: var(--light-gray);
+            margin-bottom: 25px;
+        }
+        
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 30%;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--light-gray);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .control-btn {
             background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
         
-        .current-track {
-            background-color: #e8f5e9;
+        .play-btn {
+            background-color: var(--primary);
+            width: 70px;
+            height: 70px;
+            font-size: 28px;
+        }
+        
+        .playlist {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .playlist-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .track-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background-color: var(--gray);
+            transition: all 0.2s;
+        }
+        
+        .track-item:hover {
+            background-color: #383838;
+        }
+        
+        .track-item.active {
+            background-color: rgba(141, 92, 246, 0.2);
+        }
+        
+        .track-number {
+            width: 24px;
+            color: var(--light-gray);
+            margin-right: 15px;
+        }
+        
+        .track-item.active .track-number {
+            color: var(--primary);
+        }
+        
+        .track-details {
+            flex-grow: 1;
+        }
+        
+        .track-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .track-duration {
+            font-size: 12px;
+            color: var(--light-gray);
+        }
+        
+        .footer {
+            padding: 15px 20px;
+            text-align: center;
+            color: var(--light-gray);
+            font-size: 12px;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
     </style>
 </head>
 <body>
-    <div class="player">
-        <div class="track-info">
-            <div class="track-title" id="current-track-title">Выберите трек</div>
+    <div class="player-container">
+        <div class="header">
+            <div class="logo">MartyPlayer</div>
+            <div class="menu-btn">☰</div>
         </div>
-        <audio id="audio" controls style="display: none;"></audio>
-        <div class="player-controls">
-            <button class="play-btn" id="play-btn">▶</button>
+        
+        <div class="now-playing">
+            <div class="track-info">
+                <div class="track-cover" style="background-image: url('https://i.imgur.com/JU5QhYF.jpg')"></div>
+                <div class="track-title">Golden Hour</div>
+                <div class="track-artist">JVKE</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="time">
+                        <span>1:23</span>
+                        <span>3:45</span>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="control-btn">⏮</button>
+                    <button class="control-btn play-btn">▶</button>
+                    <button class="control-btn">⏭</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="playlist">
+            <div class="playlist-title">Очередь воспроизведения</div>
+            
+            <div class="track-item active">
+                <div class="track-number">1</div>
+                <div class="track-details">
+                    <div class="track-name">Golden Hour</div>
+                    <div class="track-duration">3:45</div>
+                </div>
+            </div>
+            
+            <div class="track-item">
+                <div class="track-number">2</div>
+                <div class="track-details">
+                    <div class="track-name">As It Was</div>
+                    <div class="track-duration">2:56</div>
+                </div>
+            </div>
+            
+            <div class="track-item">
+                <div class="track-number">3</div>
+                <div class="track-details">
+                    <div class="track-name">Flowers</div>
+                    <div class="track-duration">3:21</div>
+                </div>
+            </div>
+            
+            <div class="track-item">
+                <div class="track-number">4</div>
+                <div class="track-details">
+                    <div class="track-name">Blinding Lights</div>
+                    <div class="track-duration">3:12</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            @MartyPlayer_Bot
         </div>
     </div>
-    
-    <div class="playlist" id="playlist"></div>
-
-    <script>
-        // Пример данных треков (можно заменить на свои)
-        const tracks = [
-            {
-                title: "Трек 1",
-                url: "https://example.com/track1.mp3",
-                cover: "https://i.imgur.com/example1.jpg"
-            },
-            {
-                title: "Трек 2",
-                url: "https://example.com/track2.mp3",
-                cover: "https://i.imgur.com/example2.jpg"
-            },
-            {
-                title: "Трек 3",
-                url: "https://example.com/track3.mp3",
-                cover: "https://i.imgur.com/example3.jpg"
-            }
-        ];
-
-        // Инициализация элементов
-        const playlist = document.getElementById('playlist');
-        const audio = document.getElementById('audio');
-        const playBtn = document.getElementById('play-btn');
-        const currentTrackTitle = document.getElementById('current-track-title');
-        
-        let currentTrack = null;
-
-        // Создание плейлиста
-        tracks.forEach((track, index) => {
-            const trackElement = document.createElement('div');
-            trackElement.className = 'track';
-            trackElement.dataset.index = index;
-
-            trackElement.innerHTML = `
-                <div class="track-cover" 
-                     style="background-image: url('${track.cover || 'https://i.imgur.com/content/1/2/4/5/6'}')">
-                </div>
-                <div class="track-info">
-                    <div class="track-title">${track.title}</div>
-                </div>
-            `;
-
-            trackElement.addEventListener('click', () => {
-                // Удаляем выделение у всех треков
-                document.querySelectorAll('.track').forEach(t => {
-                    t.classList.remove('current-track');
-                });
-                
-                // Добавляем выделение текущему треку
-                trackElement.classList.add('current-track');
-                
-                // Устанавливаем и воспроизводим трек
-                audio.src = track.url;
-                audio.play();
-                currentTrack = track;
-                currentTrackTitle.textContent = track.title;
-                
-                // Вибрация (если в Telegram WebView)
-                if (window.Telegram && Telegram.WebApp) {
-                    Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                }
-            });
-
-            playlist.appendChild(trackElement);
-        });
-
-        // Управление кнопкой воспроизведения
-        playBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                if (!audio.src && tracks.length > 0) {
-                    // Если ничего не играет, воспроизвести первый трек
-                    const firstTrack = document.querySelector('.track');
-                    if (firstTrack) firstTrack.click();
-                } else {
-                    audio.play();
-                }
-            } else {
-                audio.pause();
-            }
-        });
-
-        // Обновление иконки кнопки воспроизведения
-        audio.addEventListener('play', () => {
-            playBtn.textContent = '❚❚';
-        });
-
-        audio.addEventListener('pause', () => {
-            playBtn.textContent = '▶';
-        });
-    </script>
 </body>
 </html>
