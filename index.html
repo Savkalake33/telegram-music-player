@@ -1,70 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Telegram Music Player</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <title>Музыкальный Плеер</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .player {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .track-info {
+            padding: 15px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        
+        .track-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .track {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .track:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .track-cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            background-color: #e0e0e0;
+        }
+        
+        .track-info {
+            flex-grow: 1;
+            text-align: left;
+            padding: 0;
+            background: none;
+        }
+        
+        .current-track {
+            background-color: #e8f5e9;
+        }
+    </style>
 </head>
 <body>
     <div class="player">
-        <h2>🎵 Telegram Music</h2>
-        <audio id="audio" controls></audio>
-        <div class="playlist" id="playlist">
-            <!-- Треки будут загружаться здесь -->
+        <div class="track-info">
+            <div class="track-title" id="current-track-title">Выберите трек</div>
+        </div>
+        <audio id="audio" controls style="display: none;"></audio>
+        <div class="player-controls">
+            <button class="play-btn" id="play-btn">▶</button>
         </div>
     </div>
+    
+    <div class="playlist" id="playlist"></div>
 
     <script>
-    // Инициализация Telegram WebApp
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+        // Пример данных треков (можно заменить на свои)
+        const tracks = [
+            {
+                title: "Трек 1",
+                url: "https://example.com/track1.mp3",
+                cover: "https://i.imgur.com/example1.jpg"
+            },
+            {
+                title: "Трек 2",
+                url: "https://example.com/track2.mp3",
+                cover: "https://i.imgur.com/example2.jpg"
+            },
+            {
+                title: "Трек 3",
+                url: "https://example.com/track3.mp3",
+                cover: "https://i.imgur.com/example3.jpg"
+            }
+        ];
 
-    // Плейлист с корректным форматом
-    const tracks = [
-        {
-            title: "Lofi Chill",
-            url: "https://soundcloud.com/lofigeek/chill-lofi-study-mix",
-            cover: "https://i.imgur.com/example1.jpg" // Добавьте реальную ссылку
-        },
-        {
-            title: "Jazz Vibes",
-            url: "https://soundcloud.com/jazzvibes/smooth-jazz",
-            cover: "https://i.imgur.com/example2.jpg"
-        }
-    ];
+        // Инициализация элементов
+        const playlist = document.getElementById('playlist');
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('play-btn');
+        const currentTrackTitle = document.getElementById('current-track-title');
+        
+        let currentTrack = null;
 
-    // Загрузка плейлиста
-    const playlist = document.getElementById('playlist');
-    
-    tracks.forEach(track => {
-        const trackElement = document.createElement('div');
-        trackElement.className = 'track';
-        
-        trackElement.innerHTML = `
-            <div class="track-cover" 
-                 style="background-image: url('${track.cover || 'https://i.imgur.com/default.jpg'}')">
-            </div>
-            <div class="track-info">
-                <div class="track-title">${track.title}</div>
-            </div>
-        `;
-        
-        trackElement.onclick = () => {
-            document.getElementById('audio').src = track.url;
-            document.getElementById('audio').play();
-        };
-        
-        playlist.appendChild(trackElement);
-    });
+        // Создание плейлиста
+        tracks.forEach((track, index) => {
+            const trackElement = document.createElement('div');
+            trackElement.className = 'track';
+            trackElement.dataset.index = index;
 
-    // Управление плеером
-    const audio = document.getElementById('audio');
-    
-    audio.addEventListener('play', () => {
-        tg.HapticFeedback.impactOccurred('light');
-    });
-</script>
+            trackElement.innerHTML = `
+                <div class="track-cover" 
+                     style="background-image: url('${track.cover || 'https://i.imgur.com/content/1/2/4/5/6'}')">
+                </div>
+                <div class="track-info">
+                    <div class="track-title">${track.title}</div>
+                </div>
+            `;
+
+            trackElement.addEventListener('click', () => {
+                // Удаляем выделение у всех треков
+                document.querySelectorAll('.track').forEach(t => {
+                    t.classList.remove('current-track');
+                });
+                
+                // Добавляем выделение текущему треку
+                trackElement.classList.add('current-track');
+                
+                // Устанавливаем и воспроизводим трек
+                audio.src = track.url;
+                audio.play();
+                currentTrack = track;
+                currentTrackTitle.textContent = track.title;
+                
+                // Вибрация (если в Telegram WebView)
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                }
+            });
+
+            playlist.appendChild(trackElement);
+        });
+
+        // Управление кнопкой воспроизведения
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                if (!audio.src && tracks.length > 0) {
+                    // Если ничего не играет, воспроизвести первый трек
+                    const firstTrack = document.querySelector('.track');
+                    if (firstTrack) firstTrack.click();
+                } else {
+                    audio.play();
+                }
+            } else {
+                audio.pause();
+            }
+        });
+
+        // Обновление иконки кнопки воспроизведения
+        audio.addEventListener('play', () => {
+            playBtn.textContent = '❚❚';
+        });
+
+        audio.addEventListener('pause', () => {
+            playBtn.textContent = '▶';
+        });
+    </script>
 </body>
 </html>
