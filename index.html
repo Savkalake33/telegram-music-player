@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartyMusic</title>
+    <title>Marty Music</title>
     <style>
         :root {
             --primary: #8d5cf6;
@@ -52,39 +52,62 @@
         }
         
         .logo {
-            font-size: 20px;
+            font-size: 28px;
             font-weight: 700;
             background: linear-gradient(to right, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: 1px;
         }
         
-        .search-btn {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 20px;
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             cursor: pointer;
-            padding: 8px;
+            background-image: url('https://i.imgur.com/JU5QhYF.jpg');
+            background-size: cover;
         }
         
-        /* Main content */
-        .content {
+        /* Wave section */
+        .wave-section {
             padding: 20px;
+            margin: 15px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
         }
         
-        .section-title {
+        .wave-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                            rgba(141, 92, 246, 0.2) 0%, 
+                            rgba(255, 77, 141, 0.2) 100%);
+            z-index: -1;
+        }
+        
+        .wave-title {
             font-size: 18px;
             font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--light-gray);
+            margin-bottom: 10px;
         }
         
-        .main-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        .wave-description {
+            font-size: 14px;
+            color: var(--light-gray);
+            margin-bottom: 15px;
         }
         
         /* Track list */
@@ -92,6 +115,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            padding: 0 15px;
         }
         
         .track-item {
@@ -183,63 +207,36 @@
             margin-bottom: 4px;
         }
         
-        /* Search modal */
-        .search-modal {
+        /* Account menu */
+        .account-menu {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--dark);
-            z-index: 1000;
-            padding: 20px;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-        }
-        
-        .search-modal.active {
-            transform: translateY(0);
-        }
-        
-        .search-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 0;
-            background: var(--dark);
-            padding: 15px 0;
-            z-index: 10;
-        }
-        
-        .search-input {
-            flex: 1;
+            top: 60px;
+            right: 20px;
             background: var(--gray);
-            border: none;
-            border-radius: 20px;
-            padding: 12px 15px;
-            color: var(--white);
-            font-size: 16px;
-            outline: none;
+            border-radius: 10px;
+            padding: 10px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateY(-20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
         
-        .close-search {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            margin-left: 15px;
-            cursor: pointer;
+        .account-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
         }
         
-        /* Screens */
-        .screen {
-            display: none;
+        .menu-item {
+            padding: 10px 20px;
+            font-size: 14px;
+            transition: background 0.2s;
         }
         
-        .screen.active {
-            display: block;
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -247,14 +244,46 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header">
-            <div class="logo">MartyMusic</div>
-            <button class="search-btn" onclick="openSearch()">🔍</button>
+            <div class="logo">Marty</div>
+            <div class="user-avatar" onclick="toggleAccountMenu()"></div>
+        </div>
+        
+        <!-- Account Menu -->
+        <div class="account-menu" id="accountMenu">
+            <div class="menu-item">Мой профиль</div>
+            <div class="menu-item">Настройки</div>
+            <div class="menu-item">Выйти</div>
         </div>
         
         <!-- Main Screen -->
         <div class="screen active" id="homeScreen">
-            <div class="content">
-                <div class="main-title">Ton-vapr месяца</div>
+            <!-- Music Wave Section -->
+            <div class="wave-section">
+                <div class="wave-title">Моя волна</div>
+                <div class="wave-description">Подобрано специально для вас</div>
+                
+                <div class="track-list">
+                    <div class="track-item" onclick="playTrack(1)">
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Golden Hour</div>
+                            <div class="track-artist">JVKE</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item" onclick="playTrack(2)">
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Порт</div>
+                            <div class="track-artist">Xeho</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top Charts -->
+            <div style="padding: 15px;">
+                <div style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Ton-vapr месяца</div>
                 
                 <div class="track-list">
                     <div class="track-item" onclick="playTrack(1)">
@@ -298,26 +327,11 @@
         
         <!-- My Likes Screen -->
         <div class="screen" id="likesScreen">
-            <div class="content">
-                <div class="main-title">My Like</div>
+            <div style="padding: 20px;">
+                <div style="font-size: 22px; font-weight: 600; margin-bottom: 20px;">My Like</div>
                 
                 <div class="track-list" id="likedTracksList">
                     <!-- Liked tracks will be added here dynamically -->
-                </div>
-            </div>
-        </div>
-        
-        <!-- Search Modal -->
-        <div class="search-modal" id="searchModal">
-            <div class="search-header">
-                <input type="text" class="search-input" placeholder="Поиск треков, исполнителей..." id="searchInput">
-                <button class="close-search" onclick="closeSearch()">×</button>
-            </div>
-            
-            <div class="content">
-                <div class="section-title">Результаты поиска</div>
-                <div class="track-list" id="searchResults">
-                    <!-- Search results will be added here dynamically -->
                 </div>
             </div>
         </div>
@@ -350,7 +364,7 @@
                 name: "Порт",
                 artist: "Xeho",
                 cover: "https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2",
-                liked: false
+                liked: true
             },
             {
                 id: 3,
@@ -371,6 +385,19 @@
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             renderLikedTracks();
+            generateWaveTracks();
+        });
+
+        // Toggle account menu
+        function toggleAccountMenu() {
+            document.getElementById('accountMenu').classList.toggle('active');
+        }
+
+        // Close account menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-avatar') && !e.target.closest('.account-menu')) {
+                document.getElementById('accountMenu').classList.remove('active');
+            }
         });
 
         // Screen navigation
@@ -391,50 +418,12 @@
             }
         }
 
-        // Search functionality
-        function openSearch() {
-            document.getElementById('searchModal').classList.add('active');
-            document.getElementById('searchInput').focus();
+        // Generate wave tracks based on liked tracks
+        function generateWaveTracks() {
+            const likedTracks = tracks.filter(track => track.liked);
+            // In a real app, you would fetch similar tracks from an API
+            // Here we just use the liked tracks for demo
         }
-
-        function closeSearch() {
-            document.getElementById('searchModal').classList.remove('active');
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase();
-            const results = tracks.filter(track => 
-                track.name.toLowerCase().includes(query) || 
-                track.artist.toLowerCase().includes(query)
-            );
-            
-            const resultsContainer = document.getElementById('searchResults');
-            resultsContainer.innerHTML = '';
-            
-            if (results.length === 0) {
-                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">Ничего не найдено</div>';
-                return;
-            }
-            
-            results.forEach(track => {
-                const trackElement = document.createElement('div');
-                trackElement.className = 'track-item';
-                trackElement.innerHTML = `
-                    <div class="track-cover" style="background-image: url('${track.cover}')"></div>
-                    <div class="track-info">
-                        <div class="track-name">${track.name}</div>
-                        <div class="track-artist">${track.artist}</div>
-                    </div>
-                `;
-                trackElement.onclick = () => {
-                    playTrack(track.id);
-                    closeSearch();
-                };
-                resultsContainer.appendChild(trackElement);
-            });
-        });
 
         // Track actions
         function playTrack(trackId) {
