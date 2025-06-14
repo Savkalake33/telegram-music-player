@@ -30,12 +30,12 @@
         }
         
         .app-container {
-            max-width: 500px;
+            max-width: 100%;
+            width: 100%;
             margin: 0 auto;
             position: relative;
             min-height: 100vh;
-            backdrop-filter: blur(10px);
-            background: rgba(18, 18, 18, 0.7);
+            padding-bottom: 70px;
         }
         
         /* Header styles */
@@ -44,12 +44,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            z-index: 10;
+            position: sticky;
+            top: 0;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
         }
         
         .logo {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             background: linear-gradient(to right, var(--primary), var(--secondary));
             -webkit-background-clip: text;
@@ -63,115 +66,99 @@
             color: var(--white);
             font-size: 20px;
             cursor: pointer;
+            padding: 8px;
         }
         
-        /* Main Screen */
-        .main-screen {
+        /* Main content */
+        .content {
             padding: 20px;
-            transition: transform 0.4s ease;
         }
         
         .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--light-gray);
+        }
+        
+        .main-title {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 20px;
         }
         
-        /* Top Charts */
-        .charts-container {
-            margin-bottom: 30px;
+        /* Track list */
+        .track-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         
-        .chart-item {
+        .track-item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            background-color: var(--gray);
-            transition: all 0.2s;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
         }
         
-        .chart-item:hover {
-            background-color: #383838;
+        .track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .chart-position {
-            width: 30px;
+        .track-position {
+            width: 24px;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--light-gray);
-            margin-right: 15px;
+            margin-right: 12px;
             text-align: center;
         }
         
-        .chart-cover {
+        .track-cover {
             width: 50px;
             height: 50px;
             border-radius: 8px;
-            margin-right: 15px;
+            margin-right: 12px;
             background-size: cover;
             background-position: center;
             flex-shrink: 0;
         }
         
-        .chart-info {
-            flex-grow: 1;
+        .track-info {
+            flex: 1;
+            min-width: 0;
         }
         
-        .chart-title {
+        .track-name {
             font-weight: 500;
+            font-size: 16px;
             margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        .chart-artist {
+        .track-artist {
             font-size: 12px;
             color: var(--light-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        /* Liked Songs Screen */
-        .liked-songs-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--dark);
-            z-index: 1000;
-            padding: 20px;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            overflow-y: auto;
-        }
-        
-        .liked-songs-screen.active {
-            transform: translateX(0);
-        }
-        
-        .back-button {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            margin-bottom: 20px;
-            cursor: pointer;
-        }
-        
-        /* Bottom Navigation */
+        /* Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(40, 40, 40, 0.9);
+            background: rgba(40, 40, 40, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
             padding: 12px 0;
-            max-width: 500px;
-            margin: 0 auto;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
             z-index: 100;
         }
         
@@ -183,6 +170,8 @@
             font-size: 12px;
             transition: all 0.3s ease;
             cursor: pointer;
+            flex: 1;
+            max-width: 50%;
         }
         
         .nav-item.active {
@@ -190,11 +179,11 @@
         }
         
         .nav-icon {
-            font-size: 22px;
+            font-size: 20px;
             margin-bottom: 4px;
         }
         
-        /* Search Modal */
+        /* Search modal */
         .search-modal {
             position: fixed;
             top: 0;
@@ -206,6 +195,7 @@
             padding: 20px;
             transform: translateY(-100%);
             transition: transform 0.3s ease;
+            overflow-y: auto;
         }
         
         .search-modal.active {
@@ -216,10 +206,15 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background: var(--dark);
+            padding: 15px 0;
+            z-index: 10;
         }
         
         .search-input {
-            flex-grow: 1;
+            flex: 1;
             background: var(--gray);
             border: none;
             border-radius: 20px;
@@ -237,144 +232,241 @@
             margin-left: 15px;
             cursor: pointer;
         }
+        
+        /* Screens */
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Главный экран -->
-        <div class="main-screen" id="mainScreen">
-            <div class="header">
-                <div class="logo">MartyMusic</div>
-                <button class="search-btn" onclick="openSearch()">🔍</button>
-            </div>
-            
-            <div class="section-title">Топ-чарт месяца</div>
-            
-            <div class="charts-container">
-                <div class="chart-item">
-                    <div class="chart-position">1</div>
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">Golden Hour</div>
-                        <div class="chart-artist">JVKE</div>
-                    </div>
-                </div>
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">MartyMusic</div>
+            <button class="search-btn" onclick="openSearch()">🔍</button>
+        </div>
+        
+        <!-- Main Screen -->
+        <div class="screen active" id="homeScreen">
+            <div class="content">
+                <div class="main-title">Ton-vapr месяца</div>
                 
-                <div class="chart-item">
-                    <div class="chart-position">2</div>
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">Поэт</div>
-                        <div class="chart-artist">Xcho</div>
+                <div class="track-list">
+                    <div class="track-item" onclick="playTrack(1)">
+                        <div class="track-position">1</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Golden Hour</div>
+                            <div class="track-artist">JVKE</div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="chart-item">
-                    <div class="chart-position">3</div>
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">1love</div>
-                        <div class="chart-artist">Элджей</div>
+                    
+                    <div class="track-item" onclick="playTrack(2)">
+                        <div class="track-position">2</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Порт</div>
+                            <div class="track-artist">Xeho</div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="chart-item">
-                    <div class="chart-position">4</div>
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02b3a5a5d7b9d3e0a7e0d3b3e5')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">Blinding Lights</div>
-                        <div class="chart-artist">The Weeknd</div>
+                    
+                    <div class="track-item" onclick="playTrack(3)">
+                        <div class="track-position">3</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Поуе</div>
+                            <div class="track-artist">Элджей</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item" onclick="playTrack(4)">
+                        <div class="track-position">4</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02b3a5a5d7b9d3e0a7e0d3b3e5')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Blinding Lights</div>
+                            <div class="track-artist">The Weeked</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Экран "Понравившиеся" -->
-        <div class="liked-songs-screen" id="likedSongsScreen">
-            <button class="back-button" onclick="hideLikedSongs()">←</button>
-            
-            <div class="section-title">Мои треки</div>
-            
-            <div class="charts-container">
-                <div class="chart-item">
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">Golden Hour</div>
-                        <div class="chart-artist">JVKE</div>
-                    </div>
-                </div>
+        <!-- My Likes Screen -->
+        <div class="screen" id="likesScreen">
+            <div class="content">
+                <div class="main-title">My Like</div>
                 
-                <div class="chart-item">
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">Поэт</div>
-                        <div class="chart-artist">Xcho</div>
-                    </div>
-                </div>
-                
-                <div class="chart-item">
-                    <div class="chart-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5')"></div>
-                    <div class="chart-info">
-                        <div class="chart-title">1love</div>
-                        <div class="chart-artist">Элджей</div>
-                    </div>
+                <div class="track-list" id="likedTracksList">
+                    <!-- Liked tracks will be added here dynamically -->
                 </div>
             </div>
         </div>
         
-        <!-- Поиск -->
+        <!-- Search Modal -->
         <div class="search-modal" id="searchModal">
             <div class="search-header">
-                <input type="text" class="search-input" placeholder="Поиск треков, исполнителей...">
+                <input type="text" class="search-input" placeholder="Поиск треков, исполнителей..." id="searchInput">
                 <button class="close-search" onclick="closeSearch()">×</button>
             </div>
             
-            <!-- Здесь будут результаты поиска -->
+            <div class="content">
+                <div class="section-title">Результаты поиска</div>
+                <div class="track-list" id="searchResults">
+                    <!-- Search results will be added here dynamically -->
+                </div>
+            </div>
         </div>
         
-        <!-- Нижнее меню -->
+        <!-- Bottom Navigation -->
         <div class="bottom-nav">
-            <div class="nav-item active">
+            <div class="nav-item active" onclick="showScreen('homeScreen')">
                 <div class="nav-icon">🏠</div>
-                <div>Главная</div>
+                <div>Home</div>
             </div>
-            <div class="nav-item">
-                <div class="nav-icon">🔍</div>
-                <div>Поиск</div>
-            </div>
-            <div class="nav-item" onclick="showLikedSongs()">
+            <div class="nav-item" onclick="showScreen('likesScreen')">
                 <div class="nav-icon">❤️</div>
-                <div>Мои треки</div>
+                <div>My Like</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Переключение между экранами
-        function showLikedSongs() {
-            document.getElementById('likedSongsScreen').classList.add('active');
+        // Sample data
+        const tracks = [
+            {
+                id: 1,
+                name: "Golden Hour",
+                artist: "JVKE",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+                liked: true
+            },
+            {
+                id: 2,
+                name: "Порт",
+                artist: "Xeho",
+                cover: "https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2",
+                liked: false
+            },
+            {
+                id: 3,
+                name: "Поуе",
+                artist: "Элджей",
+                cover: "https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5",
+                liked: true
+            },
+            {
+                id: 4,
+                name: "Blinding Lights",
+                artist: "The Weeked",
+                cover: "https://i.scdn.co/image/ab67616d00001e02b3a5a5d7b9d3e0a7e0d3b3e5",
+                liked: false
+            }
+        ];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderLikedTracks();
+        });
+
+        // Screen navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (screenId === 'homeScreen') {
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            }
         }
-        
-        function hideLikedSongs() {
-            document.getElementById('likedSongsScreen').classList.remove('active');
-        }
-        
-        // Поиск
+
+        // Search functionality
         function openSearch() {
             document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
         }
-        
+
         function closeSearch() {
             document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
         }
-        
-        // Навигация
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const results = tracks.filter(track => 
+                track.name.toLowerCase().includes(query) || 
+                track.artist.toLowerCase().includes(query)
+            );
+            
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '';
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">Ничего не найдено</div>';
+                return;
+            }
+            
+            results.forEach(track => {
+                const trackElement = document.createElement('div');
+                trackElement.className = 'track-item';
+                trackElement.innerHTML = `
+                    <div class="track-cover" style="background-image: url('${track.cover}')"></div>
+                    <div class="track-info">
+                        <div class="track-name">${track.name}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                `;
+                trackElement.onclick = () => {
+                    playTrack(track.id);
+                    closeSearch();
+                };
+                resultsContainer.appendChild(trackElement);
             });
         });
+
+        // Track actions
+        function playTrack(trackId) {
+            const track = tracks.find(t => t.id === trackId);
+            alert(`Воспроизведение: ${track.name} - ${track.artist}`);
+            // Здесь можно добавить реальное воспроизведение через Audio API
+        }
+
+        function renderLikedTracks() {
+            const likedTracks = tracks.filter(track => track.liked);
+            const container = document.getElementById('likedTracksList');
+            container.innerHTML = '';
+            
+            if (likedTracks.length === 0) {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">Нет понравившихся треков</div>';
+                return;
+            }
+            
+            likedTracks.forEach(track => {
+                const trackElement = document.createElement('div');
+                trackElement.className = 'track-item';
+                trackElement.innerHTML = `
+                    <div class="track-cover" style="background-image: url('${track.cover}')"></div>
+                    <div class="track-info">
+                        <div class="track-name">${track.name}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                `;
+                trackElement.onclick = () => playTrack(track.id);
+                container.appendChild(trackElement);
+            });
+        }
     </script>
 </body>
 </html>
