@@ -13,31 +13,40 @@
             --gray: #282828;
             --light-gray: #b3b3b3;
             --white: #ffffff;
+            --light-bg: #f5f5f5;
+            --light-text: #333333;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #3a1c71 0%, #8d5cf6 50%, #ff4d8d 100%);
+            background: var(--dark);
             color: var(--white);
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
+
+        body.light-theme {
+            background: var(--light-bg);
+            color: var(--light-text);
+        }
+
         .app-container {
             max-width: 100%;
             width: 100%;
             margin: 0 auto;
             position: relative;
             min-height: 100vh;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            overflow: hidden;
         }
-        
+
         /* Header styles */
         .header {
             padding: 15px 20px;
@@ -50,7 +59,11 @@
             backdrop-filter: blur(10px);
             z-index: 100;
         }
-        
+
+        body.light-theme .header {
+            background: rgba(245, 245, 245, 0.8);
+        }
+
         .logo {
             font-size: 28px;
             font-weight: 700;
@@ -60,7 +73,7 @@
             color: transparent;
             letter-spacing: 1px;
         }
-        
+
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -73,18 +86,39 @@
             cursor: pointer;
             background-image: url('https://i.imgur.com/JU5QhYF.jpg');
             background-size: cover;
+            position: relative;
         }
-        
+
+        /* Screens container */
+        .screens-container {
+            position: relative;
+            width: 200%;
+            height: calc(100vh - 120px);
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .screen {
+            width: 50%;
+            height: 100%;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
         /* Wave section */
         .wave-section {
             padding: 20px;
-            margin: 15px;
+            margin: 15px 0;
             border-radius: 15px;
             background: rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
         }
-        
+
+        body.light-theme .wave-section {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
         .wave-section::before {
             content: '';
             position: absolute;
@@ -97,27 +131,30 @@
                             rgba(255, 77, 141, 0.2) 100%);
             z-index: -1;
         }
-        
+
         .wave-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 10px;
         }
-        
+
         .wave-description {
             font-size: 14px;
             color: var(--light-gray);
             margin-bottom: 15px;
         }
-        
+
+        body.light-theme .wave-description {
+            color: #666;
+        }
+
         /* Track list */
         .track-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding: 0 15px;
         }
-        
+
         .track-item {
             display: flex;
             align-items: center;
@@ -125,12 +162,21 @@
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
             transition: all 0.2s ease;
+            cursor: pointer;
         }
-        
+
+        body.light-theme .track-item {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
         .track-item:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-        
+
+        body.light-theme .track-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
         .track-position {
             width: 24px;
             font-weight: 700;
@@ -139,7 +185,11 @@
             margin-right: 12px;
             text-align: center;
         }
-        
+
+        body.light-theme .track-position {
+            color: #666;
+        }
+
         .track-cover {
             width: 50px;
             height: 50px;
@@ -148,13 +198,14 @@
             background-size: cover;
             background-position: center;
             flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        
+
         .track-info {
             flex: 1;
             min-width: 0;
         }
-        
+
         .track-name {
             font-weight: 500;
             font-size: 16px;
@@ -163,7 +214,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .track-artist {
             font-size: 12px;
             color: var(--light-gray);
@@ -171,7 +222,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
+        body.light-theme .track-artist {
+            color: #666;
+        }
+
         /* Navigation */
         .bottom-nav {
             position: fixed;
@@ -182,31 +237,53 @@
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
+            padding: 15px 0;
             z-index: 100;
         }
-        
+
+        body.light-theme .bottom-nav {
+            background: rgba(245, 245, 245, 0.95);
+        }
+
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             color: var(--light-gray);
             font-size: 12px;
-            transition: all 0.3s ease;
             cursor: pointer;
             flex: 1;
             max-width: 50%;
+            position: relative;
         }
-        
+
+        body.light-theme .nav-item {
+            color: #666;
+        }
+
         .nav-item.active {
-            color: var(--primary);
+            color: var(--white);
         }
-        
+
+        body.light-theme .nav-item.active {
+            color: var(--dark);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
         .nav-icon {
             font-size: 20px;
             margin-bottom: 4px;
         }
-        
+
         /* Account menu */
         .account-menu {
             position: fixed;
@@ -221,23 +298,112 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            width: 200px;
         }
-        
+
+        body.light-theme .account-menu {
+            background: var(--white);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
         .account-menu.active {
             transform: translateY(0);
             opacity: 1;
             visibility: visible;
         }
-        
+
         .menu-item {
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 14px;
             transition: background 0.2s;
+            cursor: pointer;
         }
-        
+
         .menu-item:hover {
             background: rgba(255, 255, 255, 0.1);
         }
+
+        body.light-theme .menu-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 20px 0 15px 15px;
+        }
+
+        /* Theme switch */
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        .theme-label {
+            font-size: 14px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        body.light-theme .slider {
+            background-color: #ccc;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
@@ -252,41 +418,49 @@
         <div class="account-menu" id="accountMenu">
             <div class="menu-item">Мой профиль</div>
             <div class="menu-item">Настройки</div>
+            <div class="theme-switch">
+                <span class="theme-label">Темная тема</span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
             <div class="menu-item">Выйти</div>
         </div>
         
-        <!-- Main Screen -->
-        <div class="screen active" id="homeScreen">
-            <!-- Music Wave Section -->
-            <div class="wave-section">
-                <div class="wave-title">Моя волна</div>
-                <div class="wave-description">Подобрано специально для вас</div>
-                
-                <div class="track-list">
-                    <div class="track-item" onclick="playTrack(1)">
-                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
-                        <div class="track-info">
-                            <div class="track-name">Golden Hour</div>
-                            <div class="track-artist">JVKE</div>
-                        </div>
-                    </div>
+        <!-- Screens Container -->
+        <div class="screens-container" id="screensContainer">
+            <!-- Home Screen -->
+            <div class="screen" id="homeScreen">
+                <!-- Music Wave Section -->
+                <div class="wave-section fade-in">
+                    <div class="wave-title">Моя волна</div>
+                    <div class="wave-description">Подобрано специально для вас</div>
                     
-                    <div class="track-item" onclick="playTrack(2)">
-                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
-                        <div class="track-info">
-                            <div class="track-name">Порт</div>
-                            <div class="track-artist">Xeho</div>
+                    <div class="track-list">
+                        <div class="track-item fade-in delay-1" onclick="playTrack(1)">
+                            <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                            <div class="track-info">
+                                <div class="track-name">Golden Hour</div>
+                                <div class="track-artist">JVKE</div>
+                            </div>
+                        </div>
+                        
+                        <div class="track-item fade-in delay-2" onclick="playTrack(2)">
+                            <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                            <div class="track-info">
+                                <div class="track-name">Порт</div>
+                                <div class="track-artist">Xeho</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Top Charts -->
-            <div style="padding: 15px;">
-                <div style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Ton-vapr месяца</div>
+                
+                <!-- Top Charts -->
+                <div class="section-title fade-in">Ton-vapr месяца</div>
                 
                 <div class="track-list">
-                    <div class="track-item" onclick="playTrack(1)">
+                    <div class="track-item fade-in delay-1" onclick="playTrack(1)">
                         <div class="track-position">1</div>
                         <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
                         <div class="track-info">
@@ -295,7 +469,7 @@
                         </div>
                     </div>
                     
-                    <div class="track-item" onclick="playTrack(2)">
+                    <div class="track-item fade-in delay-2" onclick="playTrack(2)">
                         <div class="track-position">2</div>
                         <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
                         <div class="track-info">
@@ -304,7 +478,7 @@
                         </div>
                     </div>
                     
-                    <div class="track-item" onclick="playTrack(3)">
+                    <div class="track-item fade-in delay-3" onclick="playTrack(3)">
                         <div class="track-position">3</div>
                         <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5')"></div>
                         <div class="track-info">
@@ -313,7 +487,7 @@
                         </div>
                     </div>
                     
-                    <div class="track-item" onclick="playTrack(4)">
+                    <div class="track-item fade-in" onclick="playTrack(4)">
                         <div class="track-position">4</div>
                         <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02b3a5a5d7b9d3e0a7e0d3b3e5')"></div>
                         <div class="track-info">
@@ -321,14 +495,67 @@
                             <div class="track-artist">The Weeked</div>
                         </div>
                     </div>
+                    
+                    <!-- Additional tracks to make 10 -->
+                    <div class="track-item fade-in" onclick="playTrack(5)">
+                        <div class="track-position">5</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02c8a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Stay</div>
+                            <div class="track-artist">The Kid LAROI, Justin Bieber</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item fade-in" onclick="playTrack(6)">
+                        <div class="track-position">6</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02d8a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Good 4 U</div>
+                            <div class="track-artist">Olivia Rodrigo</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item fade-in" onclick="playTrack(7)">
+                        <div class="track-position">7</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02e8a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Levitating</div>
+                            <div class="track-artist">Dua Lipa</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item fade-in" onclick="playTrack(8)">
+                        <div class="track-position">8</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02f8a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Montero</div>
+                            <div class="track-artist">Lil Nas X</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item fade-in" onclick="playTrack(9)">
+                        <div class="track-position">9</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0209a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Peaches</div>
+                            <div class="track-artist">Justin Bieber</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item fade-in" onclick="playTrack(10)">
+                        <div class="track-position">10</div>
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0219a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Kiss Me More</div>
+                            <div class="track-artist">Doja Cat ft. SZA</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- My Likes Screen -->
-        <div class="screen" id="likesScreen">
-            <div style="padding: 20px;">
-                <div style="font-size: 22px; font-weight: 600; margin-bottom: 20px;">My Like</div>
+            
+            <!-- My Likes Screen -->
+            <div class="screen" id="likesScreen">
+                <div class="section-title fade-in">My Like</div>
                 
                 <div class="track-list" id="likedTracksList">
                     <!-- Liked tracks will be added here dynamically -->
@@ -338,19 +565,19 @@
         
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="showScreen('homeScreen')">
-                <div class="nav-icon">🏠</div>
+            <div class="nav-item active" onclick="showScreen('home')">
+                <div class="nav-icon">Home</div>
                 <div>Home</div>
             </div>
-            <div class="nav-item" onclick="showScreen('likesScreen')">
-                <div class="nav-icon">❤️</div>
+            <div class="nav-item" onclick="showScreen('likes')">
+                <div class="nav-icon">Like</div>
                 <div>My Like</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Sample data
+        // Sample data with 10 tracks
         const tracks = [
             {
                 id: 1,
@@ -379,13 +606,67 @@
                 artist: "The Weeked",
                 cover: "https://i.scdn.co/image/ab67616d00001e02b3a5a5d7b9d3e0a7e0d3b3e5",
                 liked: false
+            },
+            {
+                id: 5,
+                name: "Stay",
+                artist: "The Kid LAROI, Justin Bieber",
+                cover: "https://i.scdn.co/image/ab67616d00001e02c8a7c97a6970b6ed43f3e0e2",
+                liked: true
+            },
+            {
+                id: 6,
+                name: "Good 4 U",
+                artist: "Olivia Rodrigo",
+                cover: "https://i.scdn.co/image/ab67616d00001e02d8a7c97a6970b6ed43f3e0e2",
+                liked: false
+            },
+            {
+                id: 7,
+                name: "Levitating",
+                artist: "Dua Lipa",
+                cover: "https://i.scdn.co/image/ab67616d00001e02e8a7c97a6970b6ed43f3e0e2",
+                liked: true
+            },
+            {
+                id: 8,
+                name: "Montero",
+                artist: "Lil Nas X",
+                cover: "https://i.scdn.co/image/ab67616d00001e02f8a7c97a6970b6ed43f3e0e2",
+                liked: false
+            },
+            {
+                id: 9,
+                name: "Peaches",
+                artist: "Justin Bieber",
+                cover: "https://i.scdn.co/image/ab67616d00001e0209a7c97a6970b6ed43f3e0e2",
+                liked: true
+            },
+            {
+                id: 10,
+                name: "Kiss Me More",
+                artist: "Doja Cat ft. SZA",
+                cover: "https://i.scdn.co/image/ab67616d00001e0219a7c97a6970b6ed43f3e0e2",
+                liked: false
             }
         ];
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             renderLikedTracks();
-            generateWaveTracks();
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('change', function() {
+                document.body.classList.toggle('light-theme');
+                localStorage.setItem('theme', this.checked ? 'light' : 'dark');
+            });
+            
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'light') {
+                themeToggle.checked = true;
+                document.body.classList.add('light-theme');
+            }
         });
 
         // Toggle account menu
@@ -401,28 +682,20 @@
         });
 
         // Screen navigation
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
+        function showScreen(screen) {
+            const container = document.getElementById('screensContainer');
+            const homeBtn = document.querySelectorAll('.nav-item')[0];
+            const likesBtn = document.querySelectorAll('.nav-item')[1];
             
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            if (screenId === 'homeScreen') {
-                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if (screen === 'home') {
+                container.style.transform = 'translateX(0)';
+                homeBtn.classList.add('active');
+                likesBtn.classList.remove('active');
             } else {
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                container.style.transform = 'translateX(-50%)';
+                homeBtn.classList.remove('active');
+                likesBtn.classList.add('active');
             }
-        }
-
-        // Generate wave tracks based on liked tracks
-        function generateWaveTracks() {
-            const likedTracks = tracks.filter(track => track.liked);
-            // In a real app, you would fetch similar tracks from an API
-            // Here we just use the liked tracks for demo
         }
 
         // Track actions
@@ -442,9 +715,9 @@
                 return;
             }
             
-            likedTracks.forEach(track => {
+            likedTracks.forEach((track, index) => {
                 const trackElement = document.createElement('div');
-                trackElement.className = 'track-item';
+                trackElement.className = `track-item fade-in delay-${(index % 3) + 1}`;
                 trackElement.innerHTML = `
                     <div class="track-cover" style="background-image: url('${track.cover}')"></div>
                     <div class="track-info">
