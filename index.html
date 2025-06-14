@@ -3,189 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartyPlayer</title>
+    <title>MartyMusic</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         :root {
             --primary: #8d5cf6;
+            --primary-dark: #6a3fd9;
+            --secondary: #ff4d8d;
             --dark: #121212;
             --gray: #282828;
             --light-gray: #b3b3b3;
             --white: #ffffff;
         }
         
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--dark);
-            color: var(--white);
+        * {
             margin: 0;
             padding: 0;
-            min-height: 100vh;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
-        .player-container {
+        body {
+            background: linear-gradient(135deg, #3a1c71 0%, #8d5cf6 50%, #ff4d8d 100%);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
             max-width: 500px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            position: relative;
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+            background: rgba(18, 18, 18, 0.7);
         }
         
+        /* Header styles */
         .header {
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
         
         .logo {
             font-size: 24px;
             font-weight: 700;
-            color: var(--primary);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
-        .now-playing {
-            background: linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%);
-            padding: 30px 20px;
-            border-radius: 0 0 30px 30px;
-            position: relative;
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
         
-        .now-playing::after {
+        /* Main content styles */
+        .main-content {
+            padding: 20px;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title .icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .music-wave {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .music-wave:hover {
+            transform: translateY(-5px);
+        }
+        
+        .music-wave::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.3);
-        }
-        
-        .track-info {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-        
-        .track-cover {
-            width: 220px;
-            height: 220px;
-            border-radius: 20px;
-            margin: 0 auto 25px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            background-size: cover;
-            background-position: center;
-            background-color: var(--gray);
-        }
-        
-        .track-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .track-artist {
-            font-size: 16px;
-            color: var(--light-gray);
-            margin-bottom: 25px;
-        }
-        
-        .progress-container {
-            margin-bottom: 30px;
-        }
-        
-        .progress-bar {
-            height: 4px;
-            background-color: rgba(255,255,255,0.2);
-            border-radius: 2px;
-            margin-bottom: 8px;
-            overflow: hidden;
-        }
-        
-        .progress {
+            width: 100%;
             height: 100%;
-            width: 30%;
-            background-color: var(--primary);
-            border-radius: 2px;
+            background: linear-gradient(45deg, 
+                            rgba(141, 92, 246, 0.3) 0%, 
+                            rgba(255, 77, 141, 0.3) 100%);
+            z-index: -1;
         }
         
-        .time {
+        .wave-header {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: var(--light-gray);
+            align-items: center;
+            margin-bottom: 15px;
         }
         
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
+        .wave-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .wave-edit {
+            color: var(--light-gray);
+            font-size: 14px;
+        }
+        
+        .wave-description {
+            color: var(--light-gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .wave-color {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin-bottom: 15px;
+        }
+        
+        /* Library styles */
+        .library-section {
             margin-bottom: 30px;
         }
         
-        .control-btn {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            cursor: pointer;
-            width: 50px;
-            height: 50px;
+        .library-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+            margin-bottom: 15px;
         }
         
-        .play-btn {
-            background-color: var(--primary);
-            width: 70px;
-            height: 70px;
-            font-size: 28px;
+        .library-title {
+            font-size: 20px;
+            font-weight: 600;
         }
         
-        .playlist {
-            padding: 20px;
-            flex-grow: 1;
-            overflow-y: auto;
+        .library-count {
+            color: var(--light-gray);
+            font-size: 14px;
         }
         
-        .playlist-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        .tracks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
         .track-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px 15px;
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            background-color: var(--gray);
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
         
         .track-item:hover {
-            background-color: #383838;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
         }
         
         .track-item.active {
-            background-color: rgba(141, 92, 246, 0.2);
+            background: rgba(141, 92, 246, 0.3);
         }
         
-        .track-number {
-            width: 24px;
-            color: var(--light-gray);
+        .track-cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
             margin-right: 15px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
         }
         
-        .track-item.active .track-number {
-            color: var(--primary);
-        }
-        
-        .track-details {
+        .track-info {
             flex-grow: 1;
         }
         
@@ -194,90 +214,304 @@
             margin-bottom: 4px;
         }
         
-        .track-duration {
+        .track-artist {
             font-size: 12px;
             color: var(--light-gray);
         }
         
-        .footer {
-            padding: 15px 20px;
-            text-align: center;
+        /* Playlists section */
+        .playlists-section {
+            margin-bottom: 30px;
+        }
+        
+        .playlists-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .playlist-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .playlist-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .playlist-cover {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .playlist-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .playlist-count {
+            font-size: 12px;
+            color: var(--light-gray);
+        }
+        
+        /* Bottom navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(40, 40, 40, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            max-width: 500px;
+            margin: 0 auto;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             color: var(--light-gray);
             font-size: 12px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        /* Liked songs screen (hidden by default) */
+        .liked-songs-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--dark);
+            z-index: 1000;
+            padding: 20px;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow-y: auto;
+        }
+        
+        .liked-songs-screen.active {
+            transform: translateX(0);
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .playlists-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="player-container">
+    <div class="app-container">
         <div class="header">
-            <div class="logo">MartyPlayer</div>
-            <div class="menu-btn">☰</div>
+            <div class="logo">MartyMusic</div>
+            <div class="user-avatar">👤</div>
         </div>
         
-        <div class="now-playing">
-            <div class="track-info">
-                <div class="track-cover" style="background-image: url('https://i.imgur.com/JU5QhYF.jpg')"></div>
-                <div class="track-title">Golden Hour</div>
-                <div class="track-artist">JVKE</div>
+        <div class="main-content">
+            <div class="music-wave floating">
+                <div class="wave-header">
+                    <div class="wave-title">Моя волна</div>
+                    <div class="wave-edit">Настроить</div>
+                </div>
+                <div class="wave-description">По разделу ►Коллекция</div>
+                <div class="wave-color"></div>
+                <div class="wave-description">У вашей музыки есть цвет</div>
+            </div>
+            
+            <div class="library-section">
+                <div class="library-header">
+                    <div class="library-title">Мне нравится</div>
+                    <div class="library-count">505 треков</div>
+                </div>
                 
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress"></div>
+                <div class="tracks-list">
+                    <div class="track-item" onclick="showLikedSongs()">
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Let Go</div>
+                            <div class="track-artist">Beau Young Prince</div>
+                        </div>
                     </div>
-                    <div class="time">
-                        <span>1:23</span>
-                        <span>3:45</span>
+                    
+                    <div class="track-item" onclick="showLikedSongs()">
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                        <div class="track-info">
+                            <div class="track-name">Поэт</div>
+                            <div class="track-artist">Xcho</div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-item" onclick="showLikedSongs()">
+                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5')"></div>
+                        <div class="track-info">
+                            <div class="track-name">1love</div>
+                            <div class="track-artist">Элджей</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="playlists-section">
+                <div class="library-header">
+                    <div class="library-title">Ещё у вас в Коллекции</div>
+                </div>
+                
+                <div class="playlists-grid">
+                    <div class="playlist-card">
+                        <div class="playlist-cover" style="background-image: url('https://i.scdn.co/image/ab67706f00000002e8e7c79f5e5e1c2c2b5d5a5d')"></div>
+                        <div class="playlist-name">В леворт</div>
+                        <div class="playlist-count">24 трека</div>
+                    </div>
+                    
+                    <div class="playlist-card">
+                        <div class="playlist-cover" style="background-image: url('https://i.scdn.co/image/ab67706f00000002a1b5d5a5d7b9d3e0a7e0d3b3')"></div>
+                        <div class="playlist-name">Мне нравится</div>
+                        <div class="playlist-count">505 треков</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Liked songs screen (hidden by default) -->
+        <div class="liked-songs-screen" id="likedSongsScreen">
+            <button class="back-button" onclick="hideLikedSongs()">←</button>
+            
+            <div class="section-title">
+                <span class="icon">❤️</span>
+                <span>Мне нравится</span>
+            </div>
+            
+            <div class="library-count" style="margin-bottom: 20px;">505 треков</div>
+            
+            <div class="tracks-list">
+                <div class="track-item active">
+                    <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                    <div class="track-info">
+                        <div class="track-name">Let Go</div>
+                        <div class="track-artist">Beau Young Prince</div>
                     </div>
                 </div>
                 
-                <div class="controls">
-                    <button class="control-btn">⏮</button>
-                    <button class="control-btn play-btn">▶</button>
-                    <button class="control-btn">⏭</button>
+                <div class="track-item">
+                    <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                    <div class="track-info">
+                        <div class="track-name">Поэт</div>
+                        <div class="track-artist">Xcho</div>
+                    </div>
                 </div>
+                
+                <div class="track-item">
+                    <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a3a5a5d7b9d3e0a7e0d3b3e5')"></div>
+                    <div class="track-info">
+                        <div class="track-name">1love</div>
+                        <div class="track-artist">Элджей</div>
+                    </div>
+                </div>
+                
+                <!-- More tracks can be added here -->
             </div>
         </div>
         
-        <div class="playlist">
-            <div class="playlist-title">Очередь воспроизведения</div>
-            
-            <div class="track-item active">
-                <div class="track-number">1</div>
-                <div class="track-details">
-                    <div class="track-name">Golden Hour</div>
-                    <div class="track-duration">3:45</div>
-                </div>
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div>Главная</div>
             </div>
-            
-            <div class="track-item">
-                <div class="track-number">2</div>
-                <div class="track-details">
-                    <div class="track-name">As It Was</div>
-                    <div class="track-duration">2:56</div>
-                </div>
+            <div class="nav-item">
+                <div class="nav-icon">🔍</div>
+                <div>Поиск</div>
             </div>
-            
-            <div class="track-item">
-                <div class="track-number">3</div>
-                <div class="track-details">
-                    <div class="track-name">Flowers</div>
-                    <div class="track-duration">3:21</div>
-                </div>
+            <div class="nav-item" onclick="showLikedSongs()">
+                <div class="nav-icon">❤️</div>
+                <div>Мне нравится</div>
             </div>
-            
-            <div class="track-item">
-                <div class="track-number">4</div>
-                <div class="track-details">
-                    <div class="track-name">Blinding Lights</div>
-                    <div class="track-duration">3:12</div>
-                </div>
+            <div class="nav-item">
+                <div class="nav-icon">🎵</div>
+                <div>Медиатека</div>
             </div>
-        </div>
-        
-        <div class="footer">
-            @MartyPlayer_Bot
         </div>
     </div>
+
+    <script>
+        // Toggle liked songs screen
+        function showLikedSongs() {
+            document.getElementById('likedSongsScreen').classList.add('active');
+        }
+        
+        function hideLikedSongs() {
+            document.getElementById('likedSongsScreen').classList.remove('active');
+        }
+        
+        // Add hover effects to all interactive elements
+        document.querySelectorAll('.track-item, .playlist-card, .music-wave').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s ease';
+            });
+        });
+        
+        // Set active track
+        document.querySelectorAll('.track-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.track-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Set active nav item
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
