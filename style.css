@@ -1,28 +1,66 @@
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .player {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        audio {
-            width: 100%;
-            margin: 10px 0;
-        }
-        .playlist {
-            margin-top: 20px;
-        }
-        .track {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-        .track:hover {
-            background: #f0f0f0;
-        }
-    </style>
+/* Основные стили */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0f0c29; /* Темно-синий фон */
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e); /* Градиент */
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Контейнер плеера */
+.player {
+    width: 90%;
+    max-width: 450px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Заголовок */
+.player h2 {
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Аудио-элемент */
+audio {
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 10px;
+    outline: none;
+}
+
+/* Стили для треков */
+.playlist {
+    margin-top: 20px;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.track:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.track:active {
+    transform: scale(
