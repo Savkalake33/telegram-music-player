@@ -4,57 +4,858 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SongMarty</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --primary-dark: #6a1b9a;
+            --secondary: #ba68c8;
+            --dark: #121212;
+            --gray: #282828;
+            --light-gray: #b3b3b3;
+            --white: #ffffff;
+            --light-bg: #f5f5f5;
+            --light-text: #333333;
+            --telegram-bg: #18222d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body.light-theme {
+            background: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        .app-container {
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            overflow: hidden;
+        }
+
+        /* Header styles */
+        .header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .header {
+            background: rgba(245, 245, 245, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        body.light-theme .header-btn {
+            color: var(--dark);
+        }
+
+        .header-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .header-btn.active {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Screens container */
+        .screens-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 120px);
+            overflow: hidden;
+        }
+
+        .screen-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        /* Screen transitions */
+        .screen-wrapper.home {
+            transform: translateX(0);
+            z-index: 1;
+        }
+
+        .screen-wrapper.home.hidden {
+            transform: translateX(-100%);
+        }
+
+        .screen-wrapper.likes {
+            transform: translateX(100%);
+            z-index: 2;
+        }
+
+        .screen-wrapper.likes.active {
+            transform: translateX(0);
+        }
+
+        /* Preferences section */
+        .preferences-section {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(186, 104, 200, 0.2));
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        body.light-theme .preferences-section {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(186, 104, 200, 0.1));
+        }
+
+        .preferences-section:hover {
+            transform: translateY(-3px);
+        }
+
+        .preferences-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .preferences-description {
+            font-size: 14px;
+            color: var(--light-gray);
+        }
+
+        body.light-theme .preferences-description {
+            color: #666;
+        }
+
+        /* Search Modal */
+        .search-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--dark);
+            z-index: 1000;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        body.light-theme .search-modal {
+            background: var(--light-bg);
+        }
+
+        .search-modal.active {
+            transform: translateY(0);
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background: var(--dark);
+            padding: 15px 0;
+            z-index: 10;
+        }
+
+        body.light-theme .search-header {
+            background: var(--light-bg);
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--gray);
+            border: none;
+            border-radius: 20px;
+            padding: 12px 15px;
+            color: var(--white);
+            font-size: 16px;
+            outline: none;
+        }
+
+        body.light-theme .search-input {
+            background: #e0e0e0;
+            color: var(--dark);
+        }
+
+        .close-search {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        body.light-theme .close-search {
+            color: var(--dark);
+        }
+
+        /* Settings menu */
+        .settings-menu {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: var(--gray);
+            border-radius: 10px;
+            padding: 10px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateY(-20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+        body.light-theme .settings-menu {
+            background: var(--white);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            font-size: 14px;
+            transition: background 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .menu-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-icon {
+            font-size: 18px;
+        }
+
+        /* Track list */
+        .track-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .track-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        body.light-theme .track-item {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .track-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .track-position {
+            width: 24px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--light-gray);
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        body.light-theme .track-position {
+            color: #666;
+        }
+
+        .track-cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            margin-right: 12px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .track-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .track-name {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-artist {
+            font-size: 12px;
+            color: var(--light-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        body.light-theme .track-artist {
+            color: #666;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 20px 0 15px 0;
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            z-index: 100;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .bottom-nav {
+            background: rgba(245, 245, 245, 0.95);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--light-gray);
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            position: relative;
+        }
+
+        body.light-theme .nav-item {
+            color: #666;
+        }
+
+        .nav-item.active {
+            color: var(--white);
+        }
+
+        body.light-theme .nav-item.active {
+            color: var(--dark);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        /* Player screen */
+        .player-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--dark);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            padding: 20px;
+        }
+
+        body.light-theme .player-screen {
+            background: var(--light-bg);
+        }
+
+        .player-screen.active {
+            transform: translateY(0);
+        }
+
+        .player-cover {
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-info {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .player-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .player-artist {
+            font-size: 16px;
+            color: var(--light-gray);
+        }
+
+        body.light-theme .player-artist {
+            color: #666;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .player-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.light-theme .player-btn {
+            color: var(--dark);
+        }
+
+        .play-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            color: white;
+        }
+
+        .like-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            color: var(--secondary);
+        }
+
+        .close-player {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        body.light-theme .close-player {
+            color: var(--dark);
+        }
+
+        /* Theme switch */
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+        }
+
+        .theme-label {
+            font-size: 14px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        body.light-theme .slider {
+            background-color: #ccc;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
 </head>
 <body>
     <div class="app-container">
+        <!-- Header -->
         <div class="header">
             <div class="logo">SongMarty</div>
-            <button class="header-btn" id="searchBtn">Search</button>
+            <div class="header-controls">
+                <button class="header-btn" onclick="openSearch()">Search</button>
+                <button class="header-btn" id="settingsBtn" onclick="toggleSettingsMenu(event)">Settings</button>
+            </div>
         </div>
-
+        
+        <!-- Settings Menu -->
+        <div class="settings-menu" id="settingsMenu">
+            <div class="menu-item" onclick="openProfile()">
+                <span class="menu-icon"></span>
+                <span>My Profile</span>
+            </div>
+            <div class="theme-switch">
+                <span class="theme-label">Dark theme</span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="menu-item" onclick="logout()">
+                <span class="menu-icon"></span>
+                <span>Logout</span>
+            </div>
+        </div>
+        
+        <!-- Screens Container -->
         <div class="screens-container">
-            <div class="screen">
-                <div class="track-list" id="trackList">
-                    <!-- Треки будут здесь -->
+            <!-- Home Screen -->
+            <div class="screen-wrapper home" id="homeScreenWrapper">
+                <div class="screen" id="homeScreen">
+                    <div class="content">
+                        <!-- My Preferences Section -->
+                        <div class="preferences-section" onclick="openPreferences()">
+                            <div class="preferences-title">My Preferences</div>
+                            <div class="preferences-description">Personalized recommendations</div>
+                        </div>
+                        
+                        <!-- Top 10 Section -->
+                        <div class="section-title">Top 10 this month</div>
+                        
+                        <div class="track-list">
+                            <div class="track-item fade-in delay-1" onclick="openPlayer(1)">
+                                <div class="track-position">1</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Golden Hour</div>
+                                    <div class="track-artist">JVKE</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-2" onclick="openPlayer(2)">
+                                <div class="track-position">2</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Порт</div>
+                                    <div class="track-artist">Xeho</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- My Likes Screen -->
+            <div class="screen-wrapper likes" id="likesScreenWrapper">
+                <div class="screen" id="likesScreen">
+                    <div class="content">
+                        <div class="section-title">My Likes</div>
+                        
+                        <div class="track-list" id="likedTracksList">
+                            <!-- Лайкнутые треки будут добавляться динамически -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
+        
+        <!-- Search Modal -->
+        <div class="search-modal" id="searchModal">
+            <div class="search-header">
+                <input type="text" class="search-input" placeholder="Search tracks, artists..." id="searchInput">
+                <button class="close-search" onclick="closeSearch()">✕</button>
+            </div>
+            
+            <div class="content">
+                <div class="track-list" id="searchResults">
+                    <!-- Результаты поиска будут добавляться динамически -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Player Screen -->
         <div class="player-screen" id="playerScreen">
+            <button class="like-btn" id="likeBtn">❤</button>
+            <button class="close-player" onclick="closePlayer()">✕</button>
             <div class="player-cover" id="playerCover"></div>
             <div class="player-info">
                 <div class="player-title" id="playerTitle"></div>
                 <div class="player-artist" id="playerArtist"></div>
             </div>
             <div class="player-controls">
-                <button class="player-btn play-btn" id="playBtn">▶</button>
+                <button class="player-btn">⏮</button>
+                <button class="player-btn play-btn">▶</button>
+                <button class="player-btn">⏭</button>
             </div>
-            <button class="close-player" onclick="closePlayer()">✕</button>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="showScreen('home')">
+                <div>Home</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('likes')">
+                <div>My Likes</div>
+            </div>
         </div>
     </div>
 
     <script>
-        const tg = Telegram.WebApp;
-        tg.expand();
-        let audioPlayer = new Audio();
-
-        // Пример треков (замените на свои)
+        // Данные треков
         const tracks = [
             {
                 id: 1,
                 name: "Golden Hour",
                 artist: "JVKE",
                 cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
-                audio: "https://example.com/audio1.mp3"
+                liked: true,
+                tags: ["pop", "happy"]
+            },
+            {
+                id: 2,
+                name: "Порт",
+                artist: "Xeho",
+                cover: "https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2",
+                liked: true,
+                tags: ["rap", "russian"]
+            },
+            {
+                id: 3,
+                name: "Blinding Lights",
+                artist: "The Weeknd",
+                cover: "https://i.scdn.co/image/ab67616d00001e02a935e865d5a25b151a9fe7e3",
+                liked: false,
+                tags: ["pop", "electronic"]
+            },
+            {
+                id: 4,
+                name: "Save Your Tears",
+                artist: "The Weeknd",
+                cover: "https://i.scdn.co/image/ab67616d00001e02a4f4b4c3a3a3a3a3a3a3a3a3",
+                liked: false,
+                tags: ["pop", "rnb"]
             }
         ];
 
-        // Загрузка треков
-        function loadTracks() {
-            const container = document.getElementById('trackList');
-            tracks.forEach(track => {
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            renderLikedTracks();
+            
+            // Загрузка темы
+            if (localStorage.getItem('theme') === 'light') {
+                document.getElementById('themeToggle').checked = true;
+                document.body.classList.add('light-theme');
+            }
+        });
+
+        // Функции для навигации
+        function showScreen(screen) {
+            const homeWrapper = document.getElementById('homeScreenWrapper');
+            const likesWrapper = document.getElementById('likesScreenWrapper');
+            const homeBtn = document.querySelectorAll('.nav-item')[0];
+            const likesBtn = document.querySelectorAll('.nav-item')[1];
+            
+            if (screen === 'home') {
+                homeWrapper.classList.remove('hidden');
+                likesWrapper.classList.remove('active');
+                homeBtn.classList.add('active');
+                likesBtn.classList.remove('active');
+            } else {
+                homeWrapper.classList.add('hidden');
+                likesWrapper.classList.add('active');
+                homeBtn.classList.remove('active');
+                likesBtn.classList.add('active');
+                renderLikedTracks();
+            }
+        }
+
+        // Функции для работы с плеером
+        function openPlayer(trackId) {
+            const track = tracks.find(t => t.id === trackId);
+            if (!track) return;
+            
+            document.getElementById('playerCover').style.backgroundImage = `url('${track.cover}')`;
+            document.getElementById('playerTitle').textContent = track.name;
+            document.getElementById('playerArtist').textContent = track.artist;
+            
+            // Обновляем кнопку лайка
+            const likeBtn = document.getElementById('likeBtn');
+            likeBtn.style.color = track.liked ? 'var(--secondary)' : 'var(--light-gray)';
+            likeBtn.onclick = function() {
+                track.liked = !track.liked;
+                likeBtn.style.color = track.liked ? 'var(--secondary)' : 'var(--light-gray)';
+                renderLikedTracks();
+            };
+            
+            document.getElementById('playerScreen').classList.add('active');
+        }
+
+        function closePlayer() {
+            document.getElementById('playerScreen').classList.remove('active');
+        }
+
+        // Функции для работы с лайкнутыми треками
+        function renderLikedTracks() {
+            const likedTracks = tracks.filter(track => track.liked);
+            const container = document.getElementById('likedTracksList');
+            container.innerHTML = '';
+            
+            if (likedTracks.length === 0) {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No liked tracks yet</div>';
+                return;
+            }
+            
+            likedTracks.forEach(track => {
                 const trackElement = document.createElement('div');
                 trackElement.className = 'track-item';
                 trackElement.innerHTML = `
@@ -64,42 +865,85 @@
                         <div class="track-artist">${track.artist}</div>
                     </div>
                 `;
-                trackElement.onclick = () => playTrack(track);
+                trackElement.onclick = () => openPlayer(track.id);
                 container.appendChild(trackElement);
             });
         }
 
-        // Воспроизведение
-        function playTrack(track) {
-            document.getElementById('playerTitle').textContent = track.name;
-            document.getElementById('playerArtist').textContent = track.artist;
-            document.getElementById('playerCover').style.backgroundImage = `url('${track.cover}')`;
-            
-            audioPlayer.src = track.audio;
-            audioPlayer.play();
-            document.getElementById('playBtn').textContent = '⏸';
-            document.getElementById('playerScreen').classList.add('active');
+        // Функции для поиска
+        function openSearch() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
         }
 
-        // Управление плеером
-        document.getElementById('playBtn').addEventListener('click', function() {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                this.textContent = '⏸';
-            } else {
-                audioPlayer.pause();
-                this.textContent = '▶';
+        function closeSearch() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const results = tracks.filter(track => 
+                track.name.toLowerCase().includes(query) || 
+                track.artist.toLowerCase().includes(query)
+            );
+            
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '';
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No results found</div>';
+                return;
             }
+            
+            results.forEach(track => {
+                const trackElement = document.createElement('div');
+                trackElement.className = 'track-item';
+                trackElement.innerHTML = `
+                    <div class="track-cover" style="background-image: url('${track.cover}')"></div>
+                    <div class="track-info">
+                        <div class="track-name">${track.name}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                `;
+                trackElement.onclick = () => {
+                    openPlayer(track.id);
+                    closeSearch();
+                };
+                resultsContainer.appendChild(trackElement);
+            });
         });
 
-        function closePlayer() {
-            audioPlayer.pause();
-            document.getElementById('playerScreen').classList.remove('active');
+        // Функции для настроек
+        function toggleSettingsMenu(e) {
+            e.stopPropagation();
+            document.getElementById('settingsMenu').classList.toggle('active');
         }
 
-        // Инициализация
-        tg.ready();
-        loadTracks();
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            document.getElementById('settingsMenu').classList.remove('active');
+        }
+
+        function openProfile() {
+            alert("Profile page would open here");
+            document.getElementById('settingsMenu').classList.remove('active');
+        }
+
+        function logout() {
+            alert("You have been logged out");
+            document.getElementById('settingsMenu').classList.remove('active');
+        }
+
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', function() {
+            document.getElementById('settingsMenu').classList.remove('active');
+        });
+
+        // Обработчик переключения темы
+        document.getElementById('themeToggle').addEventListener('change', toggleTheme);
     </script>
 </body>
 </html>
