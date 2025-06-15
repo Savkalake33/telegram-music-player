@@ -22,7 +22,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         body {
@@ -84,22 +84,39 @@
             background: none;
             border: none;
             color: var(--white);
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
         }
 
         body.light-theme .header-btn {
             color: var(--dark);
         }
 
-        /* Main content */
-        .content {
+        .header-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .header-btn.active {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Screens container */
+        .screens-container {
+            position: relative;
+            width: 200%;
+            height: calc(100vh - 120px);
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .screen {
+            width: 50%;
+            height: 100%;
             padding: 15px;
+            overflow-y: auto;
         }
 
         /* Preferences section */
@@ -283,8 +300,6 @@
             font-size: 14px;
             transition: background 0.2s;
             cursor: pointer;
-            display: flex;
-            align-items: center;
         }
 
         .menu-item:hover {
@@ -293,11 +308,6 @@
 
         body.light-theme .menu-item:hover {
             background: rgba(0, 0, 0, 0.05);
-        }
-
-        .menu-icon {
-            margin-right: 10px;
-            font-size: 18px;
         }
 
         /* Track list */
@@ -545,6 +555,63 @@
             font-size: 24px;
         }
 
+        /* Theme switch */
+        .theme-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        .theme-label {
+            font-size: 14px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        body.light-theme .slider {
+            background-color: #ccc;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -566,71 +633,71 @@
         <div class="header">
             <div class="logo">Marty</div>
             <div class="header-controls">
-                <button class="header-btn" onclick="openSearch()">🔍</button>
-                <button class="header-btn" onclick="toggleSettingsMenu()">⚙️</button>
+                <button class="header-btn" onclick="openSearch()">Search</button>
+                <button class="header-btn" onclick="toggleSettingsMenu()">Settings</button>
             </div>
         </div>
         
         <!-- Settings Menu -->
         <div class="settings-menu" id="settingsMenu">
-            <div class="menu-item" onclick="openProfile()">
-                <span class="menu-icon">👤</span>
-                <span>Мой профиль</span>
+            <div class="menu-item" onclick="openProfile()">My Profile</div>
+            <div class="theme-switch">
+                <span class="theme-label">Dark theme</span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
             </div>
-            <div class="menu-item" onclick="toggleTheme()">
-                <span class="menu-icon">🌓</span>
-                <span>Сменить тему</span>
-            </div>
-            <div class="menu-item" onclick="logout()">
-                <span class="menu-icon">🚪</span>
-                <span>Выйти</span>
-            </div>
+            <div class="menu-item" onclick="logout()">Logout</div>
         </div>
         
-        <!-- Main Screen -->
-        <div class="screen active" id="homeScreen">
-            <div class="content">
-                <!-- My Preferences Section -->
-                <div class="preferences-section" onclick="openPreferences()">
-                    <div class="preferences-title">My Preferences</div>
-                    <div class="preferences-description">Персонализированные рекомендации</div>
-                </div>
-                
-                <!-- Top 10 Section -->
-                <div class="section-title">Топ 10 месяца</div>
-                
-                <div class="track-list">
-                    <div class="track-item fade-in delay-1" onclick="openPlayer(1)">
-                        <div class="track-position">1</div>
-                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
-                        <div class="track-info">
-                            <div class="track-name">Golden Hour</div>
-                            <div class="track-artist">JVKE</div>
-                        </div>
+        <!-- Screens Container -->
+        <div class="screens-container" id="screensContainer">
+            <!-- Home Screen -->
+            <div class="screen" id="homeScreen">
+                <div class="content">
+                    <!-- My Preferences Section -->
+                    <div class="preferences-section" onclick="openPreferences()">
+                        <div class="preferences-title">My Preferences</div>
+                        <div class="preferences-description">Personalized recommendations</div>
                     </div>
                     
-                    <!-- Другие треки топ-10 -->
-                    <div class="track-item fade-in delay-2" onclick="openPlayer(2)">
-                        <div class="track-position">2</div>
-                        <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
-                        <div class="track-info">
-                            <div class="track-name">Порт</div>
-                            <div class="track-artist">Xeho</div>
-                        </div>
-                    </div>
+                    <!-- Top 10 Section -->
+                    <div class="section-title">Top 10 this month</div>
                     
-                    <!-- Остальные 8 треков -->
+                    <div class="track-list">
+                        <div class="track-item fade-in delay-1" onclick="openPlayer(1)">
+                            <div class="track-position">1</div>
+                            <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                            <div class="track-info">
+                                <div class="track-name">Golden Hour</div>
+                                <div class="track-artist">JVKE</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Другие треки топ-10 -->
+                        <div class="track-item fade-in delay-2" onclick="openPlayer(2)">
+                            <div class="track-position">2</div>
+                            <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                            <div class="track-info">
+                                <div class="track-name">Порт</div>
+                                <div class="track-artist">Xeho</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Остальные 8 треков -->
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- My Like Screen -->
-        <div class="screen" id="likesScreen">
-            <div class="content">
-                <div class="section-title">My Like</div>
-                
-                <div class="track-list" id="likedTracksList">
-                    <!-- Лайкнутые треки будут добавляться динамически -->
+            
+            <!-- My Likes Screen -->
+            <div class="screen" id="likesScreen">
+                <div class="content">
+                    <div class="section-title">My Like</div>
+                    
+                    <div class="track-list" id="likedTracksList">
+                        <!-- Лайкнутые треки будут добавляться динамически -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -650,7 +717,7 @@
         <!-- Search Modal -->
         <div class="search-modal" id="searchModal">
             <div class="search-header">
-                <input type="text" class="search-input" placeholder="Поиск треков, исполнителей..." id="searchInput">
+                <input type="text" class="search-input" placeholder="Search tracks, artists..." id="searchInput">
                 <button class="close-search" onclick="closeSearch()">✕</button>
             </div>
             
@@ -663,7 +730,7 @@
         
         <!-- Player Screen -->
         <div class="player-screen" id="playerScreen">
-            <button class="like-btn" id="likeBtn">❤️</button>
+            <button class="like-btn" id="likeBtn">❤</button>
             <button class="close-player" onclick="closePlayer()">✕</button>
             <div class="player-cover" id="playerCover"></div>
             <div class="player-info">
@@ -733,25 +800,23 @@
             
             // Загрузка темы
             if (localStorage.getItem('theme') === 'light') {
+                document.getElementById('themeToggle').checked = true;
                 document.body.classList.add('light-theme');
             }
         });
 
         // Функции для навигации
         function showScreen(screen) {
-            const homeScreen = document.getElementById('homeScreen');
-            const likesScreen = document.getElementById('likesScreen');
+            const container = document.getElementById('screensContainer');
             const homeBtn = document.querySelectorAll('.nav-item')[0];
             const likesBtn = document.querySelectorAll('.nav-item')[1];
             
             if (screen === 'home') {
-                homeScreen.classList.add('active');
-                likesScreen.classList.remove('active');
+                container.style.transform = 'translateX(0)';
                 homeBtn.classList.add('active');
                 likesBtn.classList.remove('active');
             } else {
-                homeScreen.classList.remove('active');
-                likesScreen.classList.add('active');
+                container.style.transform = 'translateX(-50%)';
                 homeBtn.classList.remove('active');
                 likesBtn.classList.add('active');
             }
@@ -822,7 +887,7 @@
             container.innerHTML = '';
             
             if (likedTracks.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">Нет понравившихся треков</div>';
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No liked tracks</div>';
                 return;
             }
             
@@ -864,7 +929,7 @@
             resultsContainer.innerHTML = '';
             
             if (results.length === 0) {
-                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">Ничего не найдено</div>';
+                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No results found</div>';
                 return;
             }
             
@@ -897,8 +962,13 @@
             document.getElementById('settingsMenu').classList.remove('active');
         }
 
+        function openProfile() {
+            alert("Profile page would open here");
+            document.getElementById('settingsMenu').classList.remove('active');
+        }
+
         function logout() {
-            alert("Вы вышли из аккаунта");
+            alert("You have been logged out");
             document.getElementById('settingsMenu').classList.remove('active');
             // В реальном приложении здесь была бы переадресация на страницу входа
         }
@@ -909,6 +979,9 @@
                 document.getElementById('settingsMenu').classList.remove('active');
             }
         });
+
+        // Обработчик переключения темы
+        document.getElementById('themeToggle').addEventListener('change', toggleTheme);
     </script>
 </body>
 </html>
