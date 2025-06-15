@@ -15,6 +15,8 @@
             --white: #ffffff;
             --light-bg: #f5f5f5;
             --light-text: #333333;
+            --telegram-bg: #18222d;
+            --telegram-blue: #2ea6ff;
         }
 
         * {
@@ -26,15 +28,10 @@
         }
 
         body {
-            background: var(--dark);
+            background: var(--telegram-bg);
             color: var(--white);
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        body.light-theme {
-            background: var(--light-bg);
-            color: var(--light-text);
         }
 
         .app-container {
@@ -43,7 +40,7 @@
             margin: 0 auto;
             position: relative;
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 60px;
             overflow: hidden;
         }
 
@@ -55,22 +52,15 @@
             align-items: center;
             position: sticky;
             top: 0;
-            background: rgba(18, 18, 18, 0.8);
-            backdrop-filter: blur(10px);
+            background: var(--telegram-bg);
             z-index: 100;
-        }
-
-        body.light-theme .header {
-            background: rgba(245, 245, 245, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: var(--telegram-blue);
             letter-spacing: 1px;
         }
 
@@ -91,32 +81,45 @@
             font-weight: 500;
         }
 
-        body.light-theme .header-btn {
-            color: var(--dark);
-        }
-
-        .header-btn.active {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        body.light-theme .header-btn.active {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
         /* Screens container */
         .screens-container {
             position: relative;
-            width: 200%;
+            width: 100%;
             height: calc(100vh - 120px);
-            display: flex;
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
+        }
+
+        .screen-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
         }
 
         .screen {
-            width: 50%;
+            width: 100%;
             height: 100%;
             padding: 15px;
             overflow-y: auto;
+        }
+
+        /* Telegram-like transitions */
+        .screen-wrapper.home {
+            transform: translateX(0);
+            z-index: 1;
+        }
+
+        .screen-wrapper.home.hidden {
+            transform: translateX(-100%);
+        }
+
+        .screen-wrapper.likes {
+            transform: translateX(100%);
+            z-index: 2;
+        }
+
+        .screen-wrapper.likes.active {
+            transform: translateX(0);
         }
 
         /* Preferences section */
@@ -124,12 +127,13 @@
             padding: 20px;
             margin: 15px 0;
             border-radius: 15px;
-            background: linear-gradient(135deg, rgba(141, 92, 246, 0.2), rgba(255, 77, 141, 0.2));
+            background: rgba(46, 166, 255, 0.1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
             text-align: center;
             transition: transform 0.3s;
+            border: 1px solid rgba(46, 166, 255, 0.2);
         }
 
         .preferences-section:hover {
@@ -145,169 +149,6 @@
         .preferences-description {
             font-size: 14px;
             color: var(--light-gray);
-        }
-
-        body.light-theme .preferences-description {
-            color: #666;
-        }
-
-        /* Modal for preferences */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70vh;
-            background: var(--dark);
-            z-index: 1000;
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
-            transform: translateY(100%);
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            overflow-y: auto;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        body.light-theme .modal {
-            background: var(--light-bg);
-        }
-
-        .modal.active {
-            transform: translateY(30vh);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        body.light-theme .close-modal {
-            color: var(--dark);
-        }
-
-        /* Search modal */
-        .search-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--dark);
-            z-index: 1000;
-            padding: 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-        }
-
-        body.light-theme .search-modal {
-            background: var(--light-bg);
-        }
-
-        .search-modal.active {
-            transform: translateY(0);
-        }
-
-        .search-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 0;
-            background: var(--dark);
-            padding: 15px 0;
-            z-index: 10;
-        }
-
-        body.light-theme .search-header {
-            background: var(--light-bg);
-        }
-
-        .search-input {
-            flex: 1;
-            background: var(--gray);
-            border: none;
-            border-radius: 20px;
-            padding: 12px 15px;
-            color: var(--white);
-            font-size: 16px;
-            outline: none;
-        }
-
-        body.light-theme .search-input {
-            background: #e0e0e0;
-            color: var(--dark);
-        }
-
-        .close-search {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            margin-left: 15px;
-            cursor: pointer;
-        }
-
-        body.light-theme .close-search {
-            color: var(--dark);
-        }
-
-        /* Settings menu */
-        .settings-menu {
-            position: fixed;
-            top: 60px;
-            right: 20px;
-            background: var(--gray);
-            border-radius: 10px;
-            padding: 10px 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            transform: translateY(-20px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            width: 200px;
-        }
-
-        body.light-theme .settings-menu {
-            background: var(--white);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .settings-menu.active {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .menu-item {
-            padding: 12px 20px;
-            font-size: 14px;
-            transition: background 0.2s;
-            cursor: pointer;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        body.light-theme .menu-item:hover {
-            background: rgba(0, 0, 0, 0.05);
         }
 
         /* Track list */
@@ -327,16 +168,8 @@
             cursor: pointer;
         }
 
-        body.light-theme .track-item {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
         .track-item:hover {
             background: rgba(255, 255, 255, 0.1);
-        }
-
-        body.light-theme .track-item:hover {
-            background: rgba(0, 0, 0, 0.1);
         }
 
         .track-position {
@@ -346,10 +179,6 @@
             color: var(--light-gray);
             margin-right: 12px;
             text-align: center;
-        }
-
-        body.light-theme .track-position {
-            color: #666;
         }
 
         .track-cover {
@@ -385,10 +214,6 @@
             text-overflow: ellipsis;
         }
 
-        body.light-theme .track-artist {
-            color: #666;
-        }
-
         /* Section titles */
         .section-title {
             font-size: 20px;
@@ -402,16 +227,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(40, 40, 40, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--telegram-bg);
             display: flex;
             justify-content: space-around;
             padding: 15px 0;
             z-index: 100;
-        }
-
-        body.light-theme .bottom-nav {
-            background: rgba(245, 245, 245, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-item {
@@ -419,23 +240,15 @@
             flex-direction: column;
             align-items: center;
             color: var(--light-gray);
-            font-size: 12px;
+            font-size: 14px;
             cursor: pointer;
             flex: 1;
-            max-width: 50%;
             position: relative;
-        }
-
-        body.light-theme .nav-item {
-            color: #666;
+            transition: color 0.3s;
         }
 
         .nav-item.active {
-            color: var(--white);
-        }
-
-        body.light-theme .nav-item.active {
-            color: var(--dark);
+            color: var(--telegram-blue);
         }
 
         .nav-item.active::after {
@@ -444,7 +257,7 @@
             bottom: -5px;
             width: 30px;
             height: 3px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: var(--telegram-blue);
             border-radius: 3px;
         }
 
@@ -455,7 +268,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--dark);
+            background: var(--telegram-bg);
             z-index: 1000;
             display: flex;
             flex-direction: column;
@@ -464,10 +277,6 @@
             transform: translateY(100%);
             transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
             padding: 20px;
-        }
-
-        body.light-theme .player-screen {
-            background: var(--light-bg);
         }
 
         .player-screen.active {
@@ -501,10 +310,6 @@
             color: var(--light-gray);
         }
 
-        body.light-theme .player-artist {
-            color: #666;
-        }
-
         .player-controls {
             display: flex;
             align-items: center;
@@ -527,12 +332,8 @@
             justify-content: center;
         }
 
-        body.light-theme .player-btn {
-            color: var(--dark);
-        }
-
         .play-btn {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: var(--telegram-blue);
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -553,63 +354,10 @@
             left: 20px;
             top: 20px;
             font-size: 24px;
-        }
-
-        /* Theme switch */
-        .theme-switch {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-        }
-
-        .theme-label {
-            font-size: 14px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
+            color: var(--white);
+            background: none;
+            border: none;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--gray);
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        body.light-theme .slider {
-            background-color: #ccc;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
         }
 
         /* Animations */
@@ -634,96 +382,57 @@
             <div class="logo">Marty</div>
             <div class="header-controls">
                 <button class="header-btn" onclick="openSearch()">Search</button>
-                <button class="header-btn" onclick="toggleSettingsMenu()">Settings</button>
             </div>
-        </div>
-        
-        <!-- Settings Menu -->
-        <div class="settings-menu" id="settingsMenu">
-            <div class="menu-item" onclick="openProfile()">My Profile</div>
-            <div class="theme-switch">
-                <span class="theme-label">Dark theme</span>
-                <label class="switch">
-                    <input type="checkbox" id="themeToggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="menu-item" onclick="logout()">Logout</div>
         </div>
         
         <!-- Screens Container -->
-        <div class="screens-container" id="screensContainer">
+        <div class="screens-container">
             <!-- Home Screen -->
-            <div class="screen" id="homeScreen">
-                <div class="content">
-                    <!-- My Preferences Section -->
-                    <div class="preferences-section" onclick="openPreferences()">
-                        <div class="preferences-title">My Preferences</div>
-                        <div class="preferences-description">Personalized recommendations</div>
-                    </div>
-                    
-                    <!-- Top 10 Section -->
-                    <div class="section-title">Top 10 this month</div>
-                    
-                    <div class="track-list">
-                        <div class="track-item fade-in delay-1" onclick="openPlayer(1)">
-                            <div class="track-position">1</div>
-                            <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
-                            <div class="track-info">
-                                <div class="track-name">Golden Hour</div>
-                                <div class="track-artist">JVKE</div>
-                            </div>
+            <div class="screen-wrapper home" id="homeScreenWrapper">
+                <div class="screen" id="homeScreen">
+                    <div class="content">
+                        <!-- My Preferences Section -->
+                        <div class="preferences-section" onclick="openPreferences()">
+                            <div class="preferences-title">My Preferences</div>
+                            <div class="preferences-description">Personalized recommendations</div>
                         </div>
                         
-                        <!-- Другие треки топ-10 -->
-                        <div class="track-item fade-in delay-2" onclick="openPlayer(2)">
-                            <div class="track-position">2</div>
-                            <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
-                            <div class="track-info">
-                                <div class="track-name">Порт</div>
-                                <div class="track-artist">Xeho</div>
+                        <!-- Top 10 Section -->
+                        <div class="section-title">Top 10 this month</div>
+                        
+                        <div class="track-list">
+                            <div class="track-item fade-in delay-1" onclick="openPlayer(1)">
+                                <div class="track-position">1</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Golden Hour</div>
+                                    <div class="track-artist">JVKE</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-2" onclick="openPlayer(2)">
+                                <div class="track-position">2</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Порт</div>
+                                    <div class="track-artist">Xeho</div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- Остальные 8 треков -->
                     </div>
                 </div>
             </div>
             
             <!-- My Likes Screen -->
-            <div class="screen" id="likesScreen">
-                <div class="content">
-                    <div class="section-title">My Like</div>
-                    
-                    <div class="track-list" id="likedTracksList">
-                        <!-- Лайкнутые треки будут добавляться динамически -->
+            <div class="screen-wrapper likes" id="likesScreenWrapper">
+                <div class="screen" id="likesScreen">
+                    <div class="content">
+                        <div class="section-title">My Likes</div>
+                        
+                        <div class="track-list" id="likedTracksList">
+                            <!-- Лайкнутые треки будут добавляться динамически -->
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- My Preferences Modal -->
-        <div class="modal" id="preferencesModal">
-            <div class="modal-header">
-                <div class="modal-title">My Preferences</div>
-                <button class="close-modal" onclick="closePreferences()">✕</button>
-            </div>
-            
-            <div class="track-list" id="preferencesTracksList">
-                <!-- Рекомендации будут добавляться динамически -->
-            </div>
-        </div>
-        
-        <!-- Search Modal -->
-        <div class="search-modal" id="searchModal">
-            <div class="search-header">
-                <input type="text" class="search-input" placeholder="Search tracks, artists..." id="searchInput">
-                <button class="close-search" onclick="closeSearch()">✕</button>
-            </div>
-            
-            <div class="content">
-                <div class="track-list" id="searchResults">
-                    <!-- Результаты поиска будут добавляться динамически -->
                 </div>
             </div>
         </div>
@@ -750,7 +459,7 @@
                 <div>Home</div>
             </div>
             <div class="nav-item" onclick="showScreen('likes')">
-                <div>My Like</div>
+                <div>My Likes</div>
             </div>
         </div>
     </div>
@@ -763,68 +472,60 @@
                 name: "Golden Hour",
                 artist: "JVKE",
                 cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
-                liked: true,
-                tags: ["pop", "happy"]
+                liked: true
             },
             {
                 id: 2,
                 name: "Порт",
                 artist: "Xeho",
                 cover: "https://i.scdn.co/image/ab67616d00001e0268a7c97a6970b6ed43f3e0e2",
-                liked: true,
-                tags: ["rap", "russian"]
+                liked: true
             },
-            // Добавьте остальные треки с тегами
-        ];
-
-        // Популярные треки для рекомендаций
-        const popularTracks = [
             {
-                id: 11,
-                name: "Shape of You",
-                artist: "Ed Sheeran",
-                cover: "https://i.scdn.co/image/ab67616d00001e026f6f3a6a7a6a9a0a0a0a0a0a",
-                liked: false,
-                tags: ["pop", "happy"]
+                id: 3,
+                name: "Blinding Lights",
+                artist: "The Weeknd",
+                cover: "https://i.scdn.co/image/ab67616d00001e02a935e865d5a25b151a9fe7e3",
+                liked: false
             },
-            // Добавьте другие популярные треки
+            {
+                id: 4,
+                name: "Save Your Tears",
+                artist: "The Weeknd",
+                cover: "https://i.scdn.co/image/ab67616d00001e02a4f4b4c3a3a3a3a3a3a3a3a3",
+                liked: false
+            }
         ];
-
-        // Объединяем все треки
-        const allTracks = [...tracks, ...popularTracks];
 
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
             renderLikedTracks();
-            generatePreferences();
-            
-            // Загрузка темы
-            if (localStorage.getItem('theme') === 'light') {
-                document.getElementById('themeToggle').checked = true;
-                document.body.classList.add('light-theme');
-            }
         });
 
         // Функции для навигации
         function showScreen(screen) {
-            const container = document.getElementById('screensContainer');
+            const homeWrapper = document.getElementById('homeScreenWrapper');
+            const likesWrapper = document.getElementById('likesScreenWrapper');
             const homeBtn = document.querySelectorAll('.nav-item')[0];
             const likesBtn = document.querySelectorAll('.nav-item')[1];
             
             if (screen === 'home') {
-                container.style.transform = 'translateX(0)';
+                homeWrapper.classList.remove('hidden');
+                likesWrapper.classList.remove('active');
                 homeBtn.classList.add('active');
                 likesBtn.classList.remove('active');
             } else {
-                container.style.transform = 'translateX(-50%)';
+                homeWrapper.classList.add('hidden');
+                likesWrapper.classList.add('active');
                 homeBtn.classList.remove('active');
                 likesBtn.classList.add('active');
+                renderLikedTracks();
             }
         }
 
         // Функции для работы с плеером
         function openPlayer(trackId) {
-            const track = allTracks.find(t => t.id === trackId);
+            const track = tracks.find(t => t.id === trackId);
             if (!track) return;
             
             document.getElementById('playerCover').style.backgroundImage = `url('${track.cover}')`;
@@ -847,47 +548,14 @@
             document.getElementById('playerScreen').classList.remove('active');
         }
 
-        // Функции для My Preferences
-        function openPreferences() {
-            document.getElementById('preferencesModal').classList.add('active');
-        }
-
-        function closePreferences() {
-            document.getElementById('preferencesModal').classList.remove('active');
-        }
-
-        function generatePreferences() {
-            const container = document.getElementById('preferencesTracksList');
-            container.innerHTML = '';
-            
-            // Фильтрация треков по предпочтениям пользователя (в реальном приложении - более сложный алгоритм)
-            const recommendedTracks = allTracks
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 5);
-            
-            recommendedTracks.forEach(track => {
-                const trackElement = document.createElement('div');
-                trackElement.className = 'track-item';
-                trackElement.innerHTML = `
-                    <div class="track-cover" style="background-image: url('${track.cover}')"></div>
-                    <div class="track-info">
-                        <div class="track-name">${track.name}</div>
-                        <div class="track-artist">${track.artist}</div>
-                    </div>
-                `;
-                trackElement.onclick = () => openPlayer(track.id);
-                container.appendChild(trackElement);
-            });
-        }
-
         // Функции для работы с лайкнутыми треками
         function renderLikedTracks() {
-            const likedTracks = allTracks.filter(track => track.liked);
+            const likedTracks = tracks.filter(track => track.liked);
             const container = document.getElementById('likedTracksList');
             container.innerHTML = '';
             
             if (likedTracks.length === 0) {
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No liked tracks</div>';
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No liked tracks yet</div>';
                 return;
             }
             
@@ -908,80 +576,8 @@
 
         // Функции для поиска
         function openSearch() {
-            document.getElementById('searchModal').classList.add('active');
-            document.getElementById('searchInput').focus();
+            alert("Search functionality would be implemented here");
         }
-
-        function closeSearch() {
-            document.getElementById('searchModal').classList.remove('active');
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase();
-            const results = allTracks.filter(track => 
-                track.name.toLowerCase().includes(query) || 
-                track.artist.toLowerCase().includes(query)
-            );
-            
-            const resultsContainer = document.getElementById('searchResults');
-            resultsContainer.innerHTML = '';
-            
-            if (results.length === 0) {
-                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--light-gray)">No results found</div>';
-                return;
-            }
-            
-            results.forEach(track => {
-                const trackElement = document.createElement('div');
-                trackElement.className = 'track-item';
-                trackElement.innerHTML = `
-                    <div class="track-cover" style="background-image: url('${track.cover}')"></div>
-                    <div class="track-info">
-                        <div class="track-name">${track.name}</div>
-                        <div class="track-artist">${track.artist}</div>
-                    </div>
-                `;
-                trackElement.onclick = () => {
-                    openPlayer(track.id);
-                    closeSearch();
-                };
-                resultsContainer.appendChild(trackElement);
-            });
-        });
-
-        // Функции для настроек
-        function toggleSettingsMenu() {
-            document.getElementById('settingsMenu').classList.toggle('active');
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-            document.getElementById('settingsMenu').classList.remove('active');
-        }
-
-        function openProfile() {
-            alert("Profile page would open here");
-            document.getElementById('settingsMenu').classList.remove('active');
-        }
-
-        function logout() {
-            alert("You have been logged out");
-            document.getElementById('settingsMenu').classList.remove('active');
-            // В реальном приложении здесь была бы переадресация на страницу входа
-        }
-
-        // Закрытие меню при клике вне его
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.header-btn') && !e.target.closest('.settings-menu')) {
-                document.getElementById('settingsMenu').classList.remove('active');
-            }
-        });
-
-        // Обработчик переключения темы
-        document.getElementById('themeToggle').addEventListener('change', toggleTheme);
     </script>
 </body>
 </html>
