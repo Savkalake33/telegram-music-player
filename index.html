@@ -15,7 +15,6 @@
             --white: #ffffff;
             --light-bg: #f5f5f5;
             --light-text: #333333;
-            --telegram-bg: #18222d;
         }
 
         * {
@@ -295,10 +294,6 @@
 
         body.light-theme .menu-item:hover {
             background: rgba(0, 0, 0, 0.05);
-        }
-
-        .menu-icon {
-            font-size: 18px;
         }
 
         /* Track list */
@@ -625,6 +620,13 @@
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+        .delay-9 { animation-delay: 0.9s; }
+        .delay-10 { animation-delay: 1.0s; }
     </style>
 </head>
 <body>
@@ -641,19 +643,17 @@
         <!-- Settings Menu -->
         <div class="settings-menu" id="settingsMenu">
             <div class="menu-item" onclick="openProfile()">
-                <span class="menu-icon">👤</span>
-                <span>My Profile</span>
+                <span>Profile</span>
             </div>
             <div class="theme-switch">
-                <span class="theme-label">Dark theme</span>
+                <span class="theme-label">Dark Theme</span>
                 <label class="switch">
                     <input type="checkbox" id="themeToggle">
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="menu-item" onclick="logout()">
-                <span class="menu-icon">🚪</span>
-                <span>Logout</span>
+                <span>Sign Out</span>
             </div>
         </div>
         
@@ -688,6 +688,78 @@
                                 <div class="track-info">
                                     <div class="track-name">Порт</div>
                                     <div class="track-artist">Xeho</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-3" onclick="openPlayer(3)">
+                                <div class="track-position">3</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a935e865d5a25b151a9fe7e3')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Blinding Lights</div>
+                                    <div class="track-artist">The Weeknd</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-4" onclick="openPlayer(4)">
+                                <div class="track-position">4</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02a4f4b4c3a3a3a3a3a3a3a3a3')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Save Your Tears</div>
+                                    <div class="track-artist">The Weeknd</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-5" onclick="openPlayer(5)">
+                                <div class="track-position">5</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Stay</div>
+                                    <div class="track-artist">The Kid LAROI, Justin Bieber</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-6" onclick="openPlayer(6)">
+                                <div class="track-position">6</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Good 4 U</div>
+                                    <div class="track-artist">Olivia Rodrigo</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-7" onclick="openPlayer(7)">
+                                <div class="track-position">7</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Levitating</div>
+                                    <div class="track-artist">Dua Lipa</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-8" onclick="openPlayer(8)">
+                                <div class="track-position">8</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Montero</div>
+                                    <div class="track-artist">Lil Nas X</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-9" onclick="openPlayer(9)">
+                                <div class="track-position">9</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Peaches</div>
+                                    <div class="track-artist">Justin Bieber</div>
+                                </div>
+                            </div>
+                            
+                            <div class="track-item fade-in delay-10" onclick="openPlayer(10)">
+                                <div class="track-position">10</div>
+                                <div class="track-cover" style="background-image: url('https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228')"></div>
+                                <div class="track-info">
+                                    <div class="track-name">Kiss Me More</div>
+                                    <div class="track-artist">Doja Cat ft. SZA</div>
                                 </div>
                             </div>
                         </div>
@@ -782,6 +854,54 @@
                 name: "Save Your Tears",
                 artist: "The Weeknd",
                 cover: "https://i.scdn.co/image/ab67616d00001e02a4f4b4c3a3a3a3a3a3a3a3a3",
+                liked: false,
+                tags: ["pop", "rnb"]
+            },
+            {
+                id: 5,
+                name: "Stay",
+                artist: "The Kid LAROI, Justin Bieber",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+                liked: false,
+                tags: ["pop", "rnb"]
+            },
+            {
+                id: 6,
+                name: "Good 4 U",
+                artist: "Olivia Rodrigo",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+                liked: false,
+                tags: ["pop", "rock"]
+            },
+            {
+                id: 7,
+                name: "Levitating",
+                artist: "Dua Lipa",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+                liked: false,
+                tags: ["pop", "disco"]
+            },
+            {
+                id: 8,
+                name: "Montero",
+                artist: "Lil Nas X",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+                liked: false,
+                tags: ["pop", "rap"]
+            },
+            {
+                id: 9,
+                name: "Peaches",
+                artist: "Justin Bieber",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
+                liked: false,
+                tags: ["pop", "rnb"]
+            },
+            {
+                id: 10,
+                name: "Kiss Me More",
+                artist: "Doja Cat ft. SZA",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228",
                 liked: false,
                 tags: ["pop", "rnb"]
             }
@@ -944,6 +1064,4 @@
 
         // Обработчик переключения темы
         document.getElementById('themeToggle').addEventListener('change', toggleTheme);
-    </script>
-</body>
-</html>
+    </script
