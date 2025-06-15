@@ -1143,3 +1143,254 @@
         // Filter by mood
         function filterByMood(mood) {
             if (m
+<script>
+    // ... (существующий код библиотеки музыки и DOM элементов)
+
+    // Инициализация Telegram WebApp
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Раскрываем приложение на весь экран
+    tg.enableClosingConfirmation(); // Подтверждение закрытия
+
+    // Player State
+    let currentTrackIndex = 0;
+    let isPlaying = false;
+    let likedSongs = musicLibrary.filter(song => song.liked);
+    let progressUpdateInterval;
+
+    // Initialize the app
+    function init() {
+        renderTopSongs();
+        renderLikedSongs();
+        setupEventListeners();
+        checkThemePreference();
+        
+        // Инициализация аудио обработчиков
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+        audioPlayer.addEventListener('ended', playNext);
+        
+        // Установка цвета заголовка в Telegram
+        tg.setHeaderColor(tg.colorScheme === 'light' ? '#9370DB' : '#6A5ACD');
+    }
+
+    // ... (существующие функции renderTopSongs, renderLikedSongs)
+
+    // Открытие плеера
+    function openPlayer(songId) {
+        const songIndex = musicLibrary.findIndex(song => song.id === songId);
+        if (songIndex === -1) return;
+        
+        currentTrackIndex = songIndex;
+        const song = musicLibrary[currentTrackIndex];
+        
+        playerTitle.textContent = song.title;
+        playerArtist.textContent = song.artist;
+        playerCover.src = song.cover;
+        audioPlayer.src = song.audio;
+        
+        playerModal.classList.add('active');
+        playTrack();
+        
+        // Обновляем время длительности
+        audioPlayer.onloadedmetadata = () => {
+            playerDuration.textContent = formatTime(audioPlayer.duration);
+        };
+    }
+
+    // Воспроизведение трека
+    function playTrack() {
+        audioPlayer.play().catch(e => console.error("Playback error:", e));
+        isPlaying = true;
+        playBtn.textContent = '⏸';
+        playerCover.classList.add('playing');
+        
+        // Запуск обновления прогресса
+        clearInterval(progressUpdateInterval);
+        progressUpdateInterval = setInterval(updateProgress, 500);
+    }
+
+    // Пауза
+    function pauseTrack() {
+        audioPlayer.pause();
+        isPlaying = false;
+        playBtn.textContent = '▶';
+        playerCover.classList.remove('playing');
+        clearInterval(progressUpdateInterval);
+    }
+
+    // Переключение воспроизведения
+    function togglePlayPause() {
+        if (isPlaying) pauseTrack();
+        else playTrack();
+    }
+
+    // Следующий трек
+    function playNext() {
+        currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length;
+        openPlayer(musicLibrary[currentTrackIndex].id);
+    }
+
+    // Предыдущий трек
+    function playPrev() {
+        currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length;
+        openPlayer(musicLibrary[currentTrackIndex].id);
+    }
+
+    // Обновление прогресс-бара
+    function updateProgress() {
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        playerProgress.style.width = `${progress}%`;
+        playerCurrentTime.textContent = formatTime(audioPlayer.currentTime);
+    }
+
+    // Форматирование времени
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    // Перемотка трека
+    function seekTrack(e) {
+        const progressBar = playerProgressBar;
+        const clickPosition = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.clientWidth;
+        audioPlayer.currentTime = clickPosition * audioPlayer.duration;
+        updateProgress();
+    }
+
+    // Проверка темы
+    function checkThemePreference() {
+        const savedTheme = localStorage.getItem('theme');
+        const tgTheme = tg.colorScheme;
+        
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.checked = savedTheme === 'light';
+        } else {
+            const theme = tgTheme === 'light' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            themeToggle.checked = theme === 'light';
+        }
+    }
+
+    // Переключение темы
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Обновляем цвет заголовка в Telegram
+        tg.setHeaderColor(newTheme === 'dark' ? '#6A5ACD' : '#9370DB');
+    }
+
+    // Поиск треков
+    function searchSongs(query) {
+        searchResults.innerHTML = '';
+        if (!query.trim()) {
+            searchResults.innerHTML = '<div class="empty-list">Начните вводить запрос</div>';
+            return;
+        }
+
+        const results = musicLibrary.filter(song => 
+            song.title.toLowerCase().includes(query.toLowerCase()) || 
+            song.artist.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div class="empty-list">Ничего не найдено</div>';
+            return;
+        }
+
+        results.forEach(song => {
+            const item = document.createElement('div');
+            item.className = 'like-item';
+            item.innerHTML = `
+                <img class="like-cover" src="${song.cover}" alt="${song.title}">
+                <div class="like-info">
+                    <div class="like-title">${song.title}</div>
+                    <div class="like-artist">${song.artist}</div>
+                </div>
+                <div class="like-duration">${song.duration}</div>
+            `;
+            item.addEventListener('click', () => {
+                openPlayer(song.id);
+                searchModal.classList.remove('active');
+            });
+            searchResults.appendChild(item);
+        });
+    }
+
+    // Фильтр по настроению
+    function filterByMood(mood) {
+        const allItems = document.querySelectorAll('.chart-item');
+        allItems.forEach(item => item.style.display = 'none');
+        
+        if (mood === "All") {
+            allItems.forEach(item => item.style.display = 'flex');
+            return;
+        }
+        
+        const moodSongs = musicLibrary.filter(song => song.mood.includes(mood));
+        moodSongs.forEach(song => {
+            const item = document.querySelector(`.chart-item[data-id="${song.id}"]`);
+            if (item) item.style.display = 'flex';
+        });
+    }
+
+    // Настройка обработчиков событий
+    function setupEventListeners() {
+        // Навигация
+        homeBtn.addEventListener('click', () => switchScreen('home'));
+        likesBtn.addEventListener('click', () => switchScreen('likes'));
+        
+        // Управление плеером
+        playBtn.addEventListener('click', togglePlayPause);
+        prevBtn.addEventListener('click', playPrev);
+        nextBtn.addEventListener('click', playNext);
+        playerClose.addEventListener('click', () => {
+            playerModal.classList.remove('active');
+            pauseTrack();
+        });
+        playerProgressBar.addEventListener('click', seekTrack);
+        
+        // Модальные окна
+        settingsBtn.addEventListener('click', () => settingsModal.classList.add('active'));
+        settingsClose.addEventListener('click', () => settingsModal.classList.remove('active'));
+        searchBtn.addEventListener('click', () => {
+            searchModal.classList.add('active');
+            searchInput.focus();
+        });
+        searchClose.addEventListener('click', () => searchModal.classList.remove('active'));
+        
+        // Поиск
+        searchInput.addEventListener('input', (e) => searchSongs(e.target.value));
+        
+        // Тема
+        themeToggle.addEventListener('change', toggleTheme);
+        
+        // Фильтры настроения
+        moodButtons.forEach(btn => {
+            btn.addEventListener('click', () => filterByMood(btn.textContent));
+        });
+    }
+    
+    // Переключение экранов
+    function switchScreen(screen) {
+        if (screen === 'home') {
+            homeScreen.classList.add('active');
+            likesScreen.classList.remove('active');
+            homeBtn.classList.add('active');
+            likesBtn.classList.remove('active');
+        } else {
+            homeScreen.classList.remove('active');
+            likesScreen.classList.add('active');
+            homeBtn.classList.remove('active');
+            likesBtn.classList.add('active');
+            renderLikedSongs();
+        }
+    }
+
+    // Запускаем приложение
+    document.addEventListener('DOMContentLoaded', init);
+</script>
