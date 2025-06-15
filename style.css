@@ -91,3 +91,28 @@ audio {
     font-size: 16px;
     margin-bottom: 3px;
 }
+.player-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--dark);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-screen.active {
+    display: flex;
+}
+
+.player-cover {
+    width: 250px;
+    height: 250px;
+    border-radius: 20px;
+    background-size: cover;
+    margin-bottom: 30px;
+}
